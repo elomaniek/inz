@@ -37,7 +37,7 @@ def get_name():
     return stream_name
 
 def get_password():
-    password = 'test'
+    password = 'password'
     return password
 
 

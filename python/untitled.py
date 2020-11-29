@@ -46,12 +46,15 @@ class IP4Validator(Qt.QValidator):
             return Qt.QValidator.Intermediate, pos
         return Qt.QValidator.Acceptable, pos
 
+#Kill function is used to kill all processes in this APP
 def kill():
     global server
     print("TERMINATE")
     parent = psutil.Process(server.pid)
     for child in parent.children(recursive=True):
         child.send_signal(signal.CTRL_C_EVENT)
+        #On app close we not only need to kill flask server but also every other process that is running,
+        #in this case we need to close ffmpeg
     parent.send_signal(signal.SIGTERM)
     server.wait()
     print("KILLED")
@@ -59,14 +62,13 @@ def kill():
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
 
+    #Add funciolanity to close button
     def closeEvent(self, a0: QtGui.QCloseEvent):
         kill()
         a0.accept()
         return
 
-
-
-
+    #Launch Button is used to start flask server and if checkbox - startStreamImmediately is marked, it will start deafult stream
     @pyqtSlot()
     def launch_button(self):
         global server
