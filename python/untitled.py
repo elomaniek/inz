@@ -17,6 +17,8 @@ import threading
 import signal
 import psutil
 server = None
+import preview
+
 
 class IP4Validator(Qt.QValidator):
     def __init__(self, parent=None):
@@ -71,7 +73,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         print( self.lineServerIP.text())
         if self.startStreamImmediately.isChecked():
-            server = subprocess.Popen('python app.py', stderr= open('testlog.txt', 'a'))
+            server = subprocess.Popen('python app.py')#, stderr= open('testlog.txt', 'a'))
         else:
             server = subprocess.Popen('python app.py --do-not-start-stream')
 
@@ -142,6 +144,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.gridLayout_3.addWidget(self.linePassword, 2, 1, 1, 2)
         self.previewButton = QtWidgets.QPushButton(self.centralwidget)
         self.previewButton.setObjectName("previewButton")
+        self.previewButton.clicked.connect(preview.open_ffplay)
         self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -162,6 +165,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.labelStreamImmediately.setText(_translate("MainWindow", "Do you want to start streaming immediately?"))
         self.lineServerIP.setInputMask(_translate("MainWindow", "000.000.000.000"))
         self.lineServerIP.setText(_translate("MainWindow", "..."))
+        #validator = IP4Validator()
+        #self.lineServerIP.setValidator(validator)
         self.previewButton.setText(_translate("MainWindow", "Video Preview"))
 
 if __name__ == "__main__":

@@ -23,9 +23,9 @@ def get_free_port():
         return s.getsockname()[1]
 
 def get_local_ip():
-    #hostname = socket.gethostname()
-    #local_ip = socket.gethostbyname(hostname)
-    local_ip = '10.1.11.45'
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    #local_ip = '10.1.11.45'
     return local_ip
 
 def get_server_ip():
@@ -49,6 +49,7 @@ def create_link(server_ip, stream_name, password):
     print(full_link)
     return full_link
 
+
 def default_stream():
     global ffmpeg_process
     global server_ip
@@ -58,7 +59,7 @@ def default_stream():
 
     #subprocess.call("taskkill.exe /t /f /im ffmpeg.exe")
     ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
-                        '-re -f lavfi -i testsrc ' +    # Get camera input
+                        '-re -f vfwcap -i 0 ' +    #Get camera input: -f vfwcap -i 0    OR    test video: lavfi -i testsrc
                         '-c:v libx264 ' +               # Codec - H.264
                         '-b:v 1600k -preset ultrafast -c:a libfdk_aac -b:a 128k -g 25 '+
                         #'-vf scale=' + res +    # Resolution
@@ -91,7 +92,7 @@ def index(fps,res):
 
 
     ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
-                        '-re -f lavfi -i testsrc '+                 #Get camera input -f vfwcap -i 0
+                        '-re -f lavfi -i testsrc '+                 #Get camera input: -f vfwcap -i 0    OR test video: lavfi -i testsrc
                         '-c:v libx264 '+                            #Codec - H.264
                         '-b:v 1600k -preset ultrafast -b 900k -c:a libfdk_aac -b:a 128k -g 25 '+ #stream stats
                         '-vf scale=' + res +                        #Resolution

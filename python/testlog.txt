@@ -79,3 +79,48 @@ video:22618kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing
 [libx264 @ 000001d3e395fb80] i8c dc,h,v,p: 24%  6% 70%  0%
 [libx264 @ 000001d3e395fb80] kb/s:494.57
 Exiting normally, received signal 2.
+ * Running on http://10.1.11.45:5000/ (Press CTRL+C to quit)
+ffmpeg version 2020-10-21-git-289e964873-full_build-www.gyan.dev Copyright (c) 2000-2020 the FFmpeg developers
+  built with gcc 10.2.0 (Rev3, Built by MSYS2 project)
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-lzma --enable-libsnappy --enable-zlib --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-sdl2 --enable-libdav1d --enable-libzvbi --enable-librav1e --enable-libsvtav1 --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxvid --enable-libaom --enable-libopenjpeg --enable-libvpx --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-d3d11va --enable-dxva2 --enable-libmfx --enable-libglslang --enable-vulkan --enable-libcdio --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libilbc --enable-libgsm --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint
+  libavutil      56. 60.100 / 56. 60.100
+  libavcodec     58.111.101 / 58.111.101
+  libavformat    58. 62.100 / 58. 62.100
+  libavdevice    58. 11.102 / 58. 11.102
+  libavfilter     7. 88.100 /  7. 88.100
+  libswscale      5.  8.100 /  5.  8.100
+  libswresample   3.  8.100 /  3.  8.100
+  libpostproc    55.  8.100 / 55.  8.100
+Input #0, lavfi, from 'testsrc':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0: Video: rawvideo (RGB[24] / 0x18424752), rgb24, 320x240 [SAR 1:1 DAR 4:3], 25 tbr, 25 tbn, 25 tbc
+[rtmp @ 00000261ba13c5c0] Detected librtmp style URL parameters, these aren't supported by the libavformat internal RTMP handler currently enabled. See the documentation for the correct way to pass parameters.
+Stream mapping:
+  Stream #0:0 -> #0:0 (rawvideo (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 00000261ba13fb80] using SAR=1/1
+[libx264 @ 00000261ba13fb80] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
+[libx264 @ 00000261ba13fb80] profile Constrained Baseline, level 2.1, 4:2:0, 8-bit
+[libx264 @ 00000261ba13fb80] 264 - core 161 r3018 db0d417 - H.264/MPEG-4 AVC codec - Copyleft 2003-2020 - http://www.videolan.org/x264.html - options: cabac=0 ref=1 deblock=0:0:0 analyse=0:0 me=dia subme=0 psy=1 psy_rd=1.00:0.00 mixed_ref=0 me_range=16 chroma_me=1 trellis=0 8x8dct=0 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=0 threads=7 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=0 weightp=0 keyint=25 keyint_min=2 scenecut=0 intra_refresh=0 rc=abr mbtree=0 bitrate=1600 ratetol=1.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=0
+Output #0, flv, to 'rtmp://10.1.11.45/live/stream?sign=1923350399-9201146c4f3351fabc613d47f7be9ab8 live=true':
+  Metadata:
+    encoder         : Lavf58.62.100
+    Stream #0:0: Video: h264 (libx264) ([7][0][0][0] / 0x0007), yuv420p, 320x240 [SAR 1:1 DAR 4:3], q=-1--1, 1600 kb/s, 25 fps, 1k tbn, 25 tbc
+    Metadata:
+      encoder         : Lavc58.111.101 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/1600000 buffer size: 0 vbv_delay: N/A
+frame=   13 fps=0.0 q=0.0 size=      18kB time=00:00:00.16 bitrate= 922.1kbits/s speed=0.318x    frame=   26 fps= 25 q=0.0 size=      45kB time=00:00:00.68 bitrate= 546.5kbits/s speed=0.663x    frame=   39 fps= 25 q=0.0 size=      81kB time=00:00:01.20 bitrate= 553.8kbits/s speed=0.781x    frame=   51 fps= 25 q=0.0 size=     104kB time=00:00:01.68 bitrate= 507.0kbits/s speed=0.825x    frame=   64 fps= 25 q=0.0 size=     140kB time=00:00:02.20 bitrate= 519.3kbits/s speed=0.86x    frame=   77 fps= 25 q=0.0 size=     166kB time=00:00:02.72 bitrate= 499.1kbits/s speed=0.886x    frame=   90 fps= 25 q=0.0 size=     203kB time=00:00:03.24 bitrate= 513.1kbits/s speed=0.907x    frame=  103 fps= 25 q=0.0 size=     229kB time=00:00:03.76 bitrate= 498.0kbits/s speed=0.92x    frame=  116 fps= 25 q=0.0 size=     264kB time=00:00:04.28 bitrate= 504.9kbits/s speed=0.93x    frame=  128 fps= 25 q=0.0 size=     287kB time=00:00:04.76 bitrate= 493.3kbits/s speed=0.931x    frame=  141 fps= 25 q=0.0 size=     322kB time=00:00:05.28 bitrate= 500.2kbits/s speed=0.941x    frame=  153 fps= 25 q=0.0 size=     347kB time=00:00:05.76 bitrate= 493.3kbits/s speed=0.942x    frame=  166 fps= 25 q=0.0 size=     384kB time=00:00:06.28 bitrate= 501.3kbits/s speed=0.946x    frame=  179 fps= 25 q=0.0 size=     410kB time=00:00:06.80 bitrate= 493.7kbits/s speed=0.952x    frame=  192 fps= 25 q=0.0 size=     445kB time=00:00:07.32 bitrate= 497.7kbits/s speed=0.957x    frame=  205 fps= 25 q=0.0 size=     470kB time=00:00:07.84 bitrate= 490.6kbits/s speed=0.96x    [flv @ 00000261ba13e900] Failed to update header with correct duration.
+[flv @ 00000261ba13e900] Failed to update header with correct filesize.
+frame=  210 fps= 25 q=-1.0 Lsize=     505kB time=00:00:08.36 bitrate= 495.2kbits/s speed=0.997x    
+video:501kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.875181%
+[libx264 @ 00000261ba13fb80] frame I:9     Avg QP: 1.37  size: 12246
+[libx264 @ 00000261ba13fb80] frame P:201   Avg QP: 0.13  size:  2001
+[libx264 @ 00000261ba13fb80] mb I  I16..4: 100.0%  0.0%  0.0%
+[libx264 @ 00000261ba13fb80] mb P  I16..4:  7.9%  0.0%  0.0%  P16..4: 13.7%  0.0%  0.0%  0.0%  0.0%    skip:78.5%
+[libx264 @ 00000261ba13fb80] final ratefactor: -4.99
+[libx264 @ 00000261ba13fb80] coded y,uvDC,uvAC intra: 11.3% 10.0% 9.4% inter: 10.6% 14.6% 14.6%
+[libx264 @ 00000261ba13fb80] i16 v,h,dc,p: 92%  4%  3%  1%
+[libx264 @ 00000261ba13fb80] i8c dc,h,v,p: 26%  5% 69%  0%
+[libx264 @ 00000261ba13fb80] kb/s:488.02
+Exiting normally, received signal 2.
