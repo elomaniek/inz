@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui.ui'
+# Form implementation generated from reading ui file 'untitled.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -9,17 +9,87 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSlot
+from PyQt5 import Qt
+import time
+import subprocess
+import threading
+import signal
+import psutil
+server = None
+
+class IP4Validator(Qt.QValidator):
+    def __init__(self, parent=None):
+        super(IP4Validator, self).__init__(parent)
+
+    def validate(self, address, pos):
+        if not address:
+            return Qt.QValidator.Acceptable, pos
+        octets = address.split(".")
+        size = len(octets)
+        if size > 4:
+            return Qt.QValidator.Invalid, pos
+        emptyOctet = False
+        for octet in octets:
+            if not octet or octet == "___" or octet == "   ": # check for mask symbols
+                emptyOctet = True
+                continue
+            try:
+                value = int(str(octet).strip(' _')) # strip mask symbols
+            except:
+                return Qt.QValidator.Intermediate, pos
+            if value < 0 or value > 255:
+                return Qt.QValidator.Invalid, pos
+        if size < 4 or emptyOctet:
+            return Qt.QValidator.Intermediate, pos
+        return Qt.QValidator.Acceptable, pos
+
+def kill():
+    global server
+    print("TERMINATE")
+    parent = psutil.Process(server.pid)
+    for child in parent.children(recursive=True):
+        child.send_signal(signal.CTRL_C_EVENT)
+    parent.send_signal(signal.SIGTERM)
+    server.wait()
+    print("KILLED")
+    return
+
+class Ui_MainWindow(QtWidgets.QMainWindow):
+
+    def closeEvent(self, a0: QtGui.QCloseEvent):
+        kill()
+        a0.accept()
+        return
 
 
-class Ui_MainWindow(object):
+
+
+    @pyqtSlot()
+    def launch_button(self):
+        global server
+
+        print( self.lineServerIP.text())
+        if self.startStreamImmediately.isChecked():
+            server = subprocess.Popen('python app.py', stderr= open('testlog.txt', 'a'))
+        else:
+            server = subprocess.Popen('python app.py --do-not-start-stream')
+
+        return
+        
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(313, 239)
+        MainWindow.resize(279, 306)
+        #self.logger = TextIOBase()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Triangular)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_3.setObjectName("gridLayout_3")
+        self.connectButton = QtWidgets.QPushButton(self.centralwidget)
+        self.connectButton.setObjectName("connectButton")
+        self.connectButton.clicked.connect(self.launch_button)
+        self.gridLayout_3.addWidget(self.connectButton, 5, 0, 1, 3)
         self.startStreamImmediately = QtWidgets.QCheckBox(self.centralwidget)
         self.startStreamImmediately.setWhatsThis("")
         self.startStreamImmediately.setChecked(True)
@@ -59,6 +129,10 @@ class Ui_MainWindow(object):
         self.lineServerIP.setReadOnly(False)
         self.lineServerIP.setPlaceholderText("")
         self.lineServerIP.setObjectName("lineServerIP")
+        #self.lineServerIP.setInputMask("000.000.000.000")
+        #validator = IP4Validator()
+        #self.lineServerIP.setValidator(validator)
+
         self.gridLayout_3.addWidget(self.lineServerIP, 0, 1, 1, 2)
         self.linePassword = QtWidgets.QLineEdit(self.centralwidget)
         self.linePassword.setMaxLength(30)
@@ -66,12 +140,9 @@ class Ui_MainWindow(object):
         self.linePassword.setAlignment(QtCore.Qt.AlignCenter)
         self.linePassword.setObjectName("linePassword")
         self.gridLayout_3.addWidget(self.linePassword, 2, 1, 1, 2)
-        self.disconnectButton = QtWidgets.QPushButton(self.centralwidget)
-        self.disconnectButton.setObjectName("disconnectButton")
-        self.gridLayout_3.addWidget(self.disconnectButton, 6, 0, 1, 3)
-        self.connectButton = QtWidgets.QPushButton(self.centralwidget)
-        self.connectButton.setObjectName("connectButton")
-        self.gridLayout_3.addWidget(self.connectButton, 5, 0, 1, 3)
+        self.previewButton = QtWidgets.QPushButton(self.centralwidget)
+        self.previewButton.setObjectName("previewButton")
+        self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -83,6 +154,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "CameraAPP"))
+        self.connectButton.setText(_translate("MainWindow", "Connect"))
         self.startStreamImmediately.setText(_translate("MainWindow", "YES"))
         self.labelServerIP.setText(_translate("MainWindow", "Server IP:"))
         self.labelName.setText(_translate("MainWindow", "Name:"))
@@ -90,15 +162,13 @@ class Ui_MainWindow(object):
         self.labelStreamImmediately.setText(_translate("MainWindow", "Do you want to start streaming immediately?"))
         self.lineServerIP.setInputMask(_translate("MainWindow", "000.000.000.000"))
         self.lineServerIP.setText(_translate("MainWindow", "..."))
-        self.disconnectButton.setText(_translate("MainWindow", "STOP STREAMING"))
-        self.connectButton.setText(_translate("MainWindow", "START STREAMING"))
-
+        self.previewButton.setText(_translate("MainWindow", "Video Preview"))
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    qt_app = QtWidgets.QApplication(sys.argv)
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+    ui.setupUi(ui)
+
+    ui.show()
+    sys.exit(qt_app.exec_())

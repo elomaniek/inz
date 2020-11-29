@@ -1,18 +1,19 @@
 from flask import *
 import subprocess
+import os
 import socket
 import signal
 import hashlib
 from flask_cors import CORS
 from flask import Flask
 from contextlib import closing
-
+import sys
 from sys import exit
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 ffmpeg_process = None
-
+start_stream = True
 
 
 def get_free_port():
@@ -22,12 +23,13 @@ def get_free_port():
         return s.getsockname()[1]
 
 def get_local_ip():
-    hostname = socket.gethostname()
-    local_ip = socket.gethostbyname(hostname)
+    #hostname = socket.gethostname()
+    #local_ip = socket.gethostbyname(hostname)
+    local_ip = '10.1.11.45'
     return local_ip
 
 def get_server_ip():
-    server_ip = '192.168.1.18'
+    server_ip = '10.1.11.45'
     return server_ip
 
 def get_name():
@@ -35,7 +37,7 @@ def get_name():
     return stream_name
 
 def get_password():
-    password = 'password'
+    password = 'test'
     return password
 
 
@@ -46,12 +48,6 @@ def create_link(server_ip, stream_name, password):
     full_link = 'rtmp://' + server_ip +'/live/' + stream_name + '?sign=' + timestamp + '-' + calc_link
     print(full_link)
     return full_link
-
-
-server_ip = get_server_ip()
-name = get_name()
-password = get_password()
-connection_link = create_link(server_ip,name,password)
 
 def default_stream():
     global ffmpeg_process
@@ -70,6 +66,9 @@ def default_stream():
                         ' -pix_fmt yuv420p ' +  #
                         '-f flv "' + connection_link  + ' live=true"'
                         )
+
+
+
 
 @app.route('/<fps><res>', methods=['POST'])
 def index(fps,res):
@@ -101,17 +100,40 @@ def index(fps,res):
                         '-f flv "' + connection_link + ' live=true"'
                         )
 
+
     return 'Nothing to see here'
 
 
 def handler(signal_received, frame):
+    global ffmpeg_process
     # Handle any cleanup here
-    print('SIGINT or CTRL-C detected. ')
+    print('SIGINT or CTRL-C detected. ', file=sys.stderror)
+    if signal_received == signal.SIGTERM:
+        if ffmpeg_process is not None:
+            print("SENDING_SIGNAL")
+            ffmpeg_process.send_signal(signal.CTRL_C_EVENT)
+            print("SENT.. WAITING TO KILL FFMPEG")
+            ffmpeg_process.wait()
+        exit()
+
+
+
+
+def launch():
+    global start_stream
+    if start_stream is True:
+        default_stream() #starts stream with default camera setup
+    app.run(host = local_ip)
+
+
+
+if '--do-not-start-stream' in sys.argv:
+    start_stream = False
 
 signal.signal(signal.SIGINT, handler)
-
-default_stream() #starts stream with default camera setup
-
+server_ip = get_server_ip()
+name = get_name()
+password = get_password()
+connection_link = create_link(server_ip,name,password)
 local_ip = get_local_ip()
-app.run(host = local_ip)
-
+launch()

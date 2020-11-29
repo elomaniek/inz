@@ -30,7 +30,7 @@ const config = {
     auth: {
     play: true,
     publish: true,
-    secret: 'password'
+    secret: 'test'
   }
   /*auth: {
     api : true,
