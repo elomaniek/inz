@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>*,
+        *::before,
+        *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: inherit;
+        }
+        
+        html {
+          box-sizing: border-box;
+          background: #263238;
+        }
+        
+        .container {
+          background: #263238;
+          min-height: 100vh;
+          display: grid;
+          grid-template-columns: 1fr 80vw 1fr;
+          grid-template-rows: 1fr 70vh 1fr;
+          justify-items: center;
+          align-items: center;
+        }
+        .container__btn {
+          grid-column: 2 / 3;
+          grid-row: 2 / 3;
+          display: grid;
+          grid-template-columns: repeat(3, 230px);
+          grid-gap: 50px;
+          justify-items: center;
+          align-items: center;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }   
+
+        @media screen and (max-width: 800px) {
+          .container__btn {
+            grid-template-columns: 230px;
+            grid-template-rows: repeat(auto-fit, 1fr);
+          }
+        }
+        
+        /*  ALL BUTTONS */
+        .btn {
+          font-family: "Poppins", sans-serif;
+          font-size: 18px;
+          border: none;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          border-radius: 12px;
+          color: #fff;
+          position: relative;
+          cursor: pointer;
+          box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
+        }
+        .btn:focus, .btn:focus::after {
+          outline: none;
+        }
+        .btn:active {
+          transform: translateY(2px);
+        }
+        
+        /*  BUTTON GREEN */
+        .btn-flip {
+          overflow: hidden;
+          background-image: linear-gradient(to right, #26e089, #00b297);
+        }
+        .btn-flip > * {
+          height: 100%;
+          width: 100%;
+          display: inline-block;
+          transition: all 0.4s;
+        }
+        .btn-flip__visible {
+          padding: 15px 75px;
+        }
+        .btn-flip__invisible {
+          position: absolute;
+          padding: 15px 0;
+          left: 0;
+          top: -100%;
+        }
+        .btn-flip:hover .btn-flip__visible {
+          transform: translateY(100%);
+        }
+        .btn-flip:hover .btn-flip__invisible {
+          top: 0;
+        }
+        
+        /*  BUTTON PINK  */
+        .btn-pulse {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #ff5f87, #fb0779);
+          z-index: 1;
+        }
+        .btn-pulse::after {
+          content: "";
+          display: inline-block;
+          position: absolute;
+          z-index: -1;
+          width: 100%;
+          height: 100%;
+          border: inherit;
+          top: 0;
+          left: 0;
+          background: inherit;
+          border-radius: inherit;
+          transition: all 0.5s;
+        }
+        .btn-pulse:hover::after {
+          transform: scaleX(1.2) scaleY(1.4);
+          opacity: 0;
+        }
+        
+        /*  BUTTON BLUE  */
+        .btn-shine {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #1bdbd1, #1fa2ff);
+          overflow: hidden;
+        }
+        .btn-shine span {
+          z-index: 20;
+        }
+        .btn-shine::after {
+          background: #fff;
+          content: "";
+          height: 155px;
+          top: -50px;
+          left: -75px;
+          opacity: 0.3;
+          position: absolute;
+          transform: rotate(35deg);
+          transition: all 650ms cubic-bezier(0.19, 1, 0.22, 1);
+          width: 50px;
+          z-index: 0;
+        }
+        .btn-shine:hover::after {
+          left: 120%;
+          transition: all 650ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        /*  BUTTON ORANGE  */
+        .btn-fill {
+          padding: 15px 75px;
+          background: transparent;
+          color: #ffb300;
+          border: 1px solid #ffb300;
+          z-index: 1;
+          overflow: hidden;
+        }
+        .btn-fill:hover span {
+          color: #263238;
+          transition: all 0.2s;
+        }
+        .btn-fill::after {
+          background: #ffb300;
+          content: "";
+          height: 100%;
+          width: 100%;
+          top: 0;
+          left: -230px;
+          position: absolute;
+          transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: -1;
+        }
+        .btn-fill:hover::after {
+          left: 0;
+          transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+          color: #fff;
+        }
+        
+        /*  BUTTON LIGHT SHAD0W  */
+        .btn-shadow {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #ffb300, #ff5f87);
+          transition: 0.2s ease;
+        }
+        .btn-shadow:hover {
+          transform: translateY(-2px) scaleX(1.05) scaleY(1.05);
+          box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
+        }
+        
+        /*  BTN GRADIENTS */
+        .btn-gradients {
+          padding: 15px 75px;
+          background: transparent;
+          z-index: 1;
+          overflow: hidden;
+        }
+        .btn-gradients::after {
+          background-image: linear-gradient(to right, #6f16fd, #fb0779);
+          content: "";
+          height: 100%;
+          width: 160%;
+          top: 0;
+          left: 0;
+          position: absolute;
+          transition: all 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: -1;
+        }
+        .btn-gradients:hover::after {
+          left: -120px;
+          transition: all 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+          color: #fff;
+        }
+        </style>
+
+</head>
+<body>
+   <!-- <div class="container">
+        <div class="container__btn">
+          <button class="btn btn-flip">
+            <span class="btn-flip__visible">button</span>
+            <span class="btn-flip__invisible">click me!</span>
+          </button>
+          <button class="btn btn-pulse">button</button>
+          <button class="btn btn-shine"><span>button</span></button>
+          <button class="btn btn-fill"><span>button</span></button>
+          <button class="btn btn-shadow">button</button>
+          <button class="btn btn-gradients">button</button>
+        </div>
+      </div>
+    -->
+            <!-- Video play -->
+        <!--<input type="file" id="file-selector" accept= '.mp4' class = "btn btn-shadow" style = "display:none">-->
+        <input {
+            type = "button";
+            id = "file-selector";
+            accept = ".mp4";
+            onclick = "document.getElementById('file').click();";
+            class = "btn btn-shine";
+            value = "Choose .mp4 file";
+        }/>
+        <input {
+            type="file"; 
+            style="display:none;"; 
+            id="file" name="file";
+        }/>
+        
+
+        <script>
+                
+           const fileSelector = document.getElementById('file');
+            fileSelector.addEventListener('change', (event) => {
+                const fileList = event.target.files;
+                console.log(fileList);
+                document.body.innerHTML = '<div class="center"><video controls autoplay> <source src = "./media/live/dupa1/2020-11-01-16-23-11.mp4" type="video/mp4"></video></div>';
+                document.body.innerHTML += '<div class = "container_btn"><input type="button" id="file-selector" accept = ".mp4" onclick="document.getElementById('+'file'+').click();" class = "btn btn-shadow" value = "Change .mp4 file"/></div>';
+                document.body.innerHTML += '<input type="file" style="display:none;" id="file" name="file" />';
+
+
+                });
+
+        </script> 
+</body>
+</html>
+
+            

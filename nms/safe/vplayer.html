@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>*,
+        *::before,
+        *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: inherit;
+        }
+        
+        html {
+          box-sizing: border-box;
+          background: #263238;
+        }
+        
+        .container {
+          background: #263238;
+          min-height: 100vh;
+          display: grid;
+          grid-template-columns: 1fr 80vw 1fr;
+          grid-template-rows: 1fr 70vh 1fr;
+          justify-items: center;
+          align-items: center;
+        }
+        .container__btn {
+          grid-column: 2 / 3;
+          grid-row: 2 / 3;
+          display: grid;
+          grid-template-columns: repeat(3, 230px);
+          grid-gap: 50px;
+          justify-items: center;
+          align-items: center;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }   
+
+        @media screen and (max-width: 800px) {
+          .container__btn {
+            grid-template-columns: 230px;
+            grid-template-rows: repeat(auto-fit, 1fr);
+          }
+        }
+        
+        /*  ALL BUTTONS */
+        .btn {
+          font-family: "Poppins", sans-serif;
+          font-size: 18px;
+          border: none;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          border-radius: 12px;
+          color: #fff;
+          position: relative;
+          cursor: pointer;
+          box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
+        }
+        .btn:focus, .btn:focus::after {
+          outline: none;
+        }
+        .btn:active {
+          transform: translateY(2px);
+        }
+        
+        /*  BUTTON GREEN */
+        .btn-flip {
+          overflow: hidden;
+          background-image: linear-gradient(to right, #26e089, #00b297);
+        }
+        .btn-flip > * {
+          height: 100%;
+          width: 100%;
+          display: inline-block;
+          transition: all 0.4s;
+        }
+        .btn-flip__visible {
+          padding: 15px 75px;
+        }
+        .btn-flip__invisible {
+          position: absolute;
+          padding: 15px 0;
+          left: 0;
+          top: -100%;
+        }
+        .btn-flip:hover .btn-flip__visible {
+          transform: translateY(100%);
+        }
+        .btn-flip:hover .btn-flip__invisible {
+          top: 0;
+        }
+        
+        /*  BUTTON PINK  */
+        .btn-pulse {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #ff5f87, #fb0779);
+          z-index: 1;
+        }
+        .btn-pulse::after {
+          content: "";
+          display: inline-block;
+          position: absolute;
+          z-index: -1;
+          width: 100%;
+          height: 100%;
+          border: inherit;
+          top: 0;
+          left: 0;
+          background: inherit;
+          border-radius: inherit;
+          transition: all 0.5s;
+        }
+        .btn-pulse:hover::after {
+          transform: scaleX(1.2) scaleY(1.4);
+          opacity: 0;
+        }
+        
+        /*  BUTTON BLUE  */
+        .btn-shine {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #1bdbd1, #1fa2ff);
+          overflow: hidden;
+        }
+        .btn-shine span {
+          z-index: 20;
+        }
+        .btn-shine::after {
+          background: #fff;
+          content: "";
+          height: 155px;
+          top: -50px;
+          left: -75px;
+          opacity: 0.3;
+          position: absolute;
+          transform: rotate(35deg);
+          transition: all 650ms cubic-bezier(0.19, 1, 0.22, 1);
+          width: 50px;
+          z-index: 0;
+        }
+        .btn-shine:hover::after {
+          left: 120%;
+          transition: all 650ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        /*  BUTTON ORANGE  */
+        .btn-fill {
+          padding: 15px 75px;
+          background: transparent;
+          color: #ffb300;
+          border: 1px solid #ffb300;
+          z-index: 1;
+          overflow: hidden;
+        }
+        .btn-fill:hover span {
+          color: #263238;
+          transition: all 0.2s;
+        }
+        .btn-fill::after {
+          background: #ffb300;
+          content: "";
+          height: 100%;
+          width: 100%;
+          top: 0;
+          left: -230px;
+          position: absolute;
+          transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: -1;
+        }
+        .btn-fill:hover::after {
+          left: 0;
+          transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+          color: #fff;
+        }
+        
+        /*  BUTTON LIGHT SHAD0W  */
+        .btn-shadow {
+          padding: 15px 75px;
+          background-image: linear-gradient(to right, #ffb300, #ff5f87);
+          transition: 0.2s ease;
+        }
+        .btn-shadow:hover {
+          transform: translateY(-2px) scaleX(1.05) scaleY(1.05);
+          box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
+        }
+        
+        /*  BTN GRADIENTS */
+        .btn-gradients {
+          padding: 15px 75px;
+          background: transparent;
+          z-index: 1;
+          overflow: hidden;
+        }
+        .btn-gradients::after {
+          background-image: linear-gradient(to right, #6f16fd, #fb0779);
+          content: "";
+          height: 100%;
+          width: 160%;
+          top: 0;
+          left: 0;
+          position: absolute;
+          transition: all 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+          z-index: -1;
+        }
+        .btn-gradients:hover::after {
+          left: -120px;
+          transition: all 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+          color: #fff;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }
+        .button-container {
+            position: relative;
+            
+        }
+        .video-container {
+            position:absolute;
+            
+            grid-template-rows:auto;
+            grid-row: gap 1%;
+            top: 50%;
+            left: 30%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vh;
+            }
+            .video-container > video {
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            }
+            @media screen and (max-aspect-ratio: 1920/1080) {
+            .video-container > video {
+                height: 100%;
+            }
+            }
+            @media screen and (min-aspect-ratio: 1920/1080) {
+            .video-container > video {
+                width: 100%;
+            }
+        }
+        </style>
+
+
+</head>
+<body>
+    <div id="message" ></div>
+    <!--<input {
+        type = "button";
+        id = "file-selector";
+        accept = ".mp4";
+        onclick = "document.getElementById('file').click();";
+        class = "btn btn-shine";
+        value = "Choose .mp4 file";
+    }/>
+    <input {
+        type="file"; 
+        style="display:none;"; 
+        id="file" name="file";
+    }/>-->
+
+    <input type="file" accept="video/*" class='btn btn-shine' id = "file" />
+
+    <style>
+
+        video, input {
+        display: block;
+
+        }
+    
+        input {
+            width: 100%;   
+        }
+    
+        .info {
+            background-color: #263238;     
+            color:#fff       
+        }
+    
+        .error {
+            background-color: red;
+            color: white;
+        }
+    </style>
+
+    <div class = "video-container"><video controls autoplay></video></div>
+
+
+<script>(function localFileVideoPlayerInit(win) {
+    //Getting information about .mp4
+            const fileSelector = document.getElementById('file');
+            fileSelector.addEventListener('change', (event) => {
+                const fileList = event.target.files;
+                console.log(fileList[0])
+                //fileList[0].size - size in bytes
+                //fileList[0].name - file name
+                //fileList[0].lastModified - last modified
+                //fileList[0].type - file type (only mp4 possible)
+
+                // GETTING DATE
+                const nameMP4 = fileList[0].name.replaceAll('-',':')
+                
+
+                String.prototype.replaceAt = function(index, replacement) {
+                    return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+                }
+                const name = nameMP4.replaceAt(10,' ');
+                const date = name.slice(0,-4)
+                //Getting file size 
+
+                var size = fileList[0].size/1000000
+                size = Math.round(size) + ' MB'
+                
+                //getting end date
+                const unixTimestamp = fileList[0].lastModified
+                const dateObject = new Date(unixTimestamp)
+                const humanDateFormat = dateObject.toLocaleString()
+                alert(humanDateFormat)
+            
+
+
+
+
+                
+
+                
+                
+
+
+
+
+          
+                //console.log(fileList);
+                
+            });
+            
+            
+            
+            
+    var URL = win.URL || win.webkitURL,
+        displayMessage = (function displayMessageInit() {
+            var node = document.querySelector('#message');
+
+            return function displayMessage(message, isError) {
+                node.innerHTML = message;
+                node.className = isError ? 'error' : 'info';
+            };
+        }()),
+        playSelectedFile = function playSelectedFileInit(event) {
+            var file = this.files[0];
+
+            var type = file.type;
+
+            var videoNode = document.querySelector('video');
+
+            var canPlay = videoNode.canPlayType(type);
+
+            canPlay = (canPlay === '' ? 'no' : canPlay);
+
+            var message = 'Can play type "' + type + '": ' + canPlay;
+
+            var isError = canPlay === 'no';
+
+            //displayMessage(message, isError);
+            if (isError) {
+                return;
+            }
+
+            var fileURL = URL.createObjectURL(file);
+
+            videoNode.src = fileURL;
+        },
+        inputNode = document.querySelector('input');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    if (!URL) {
+        displayMessage('Your browser is not ' + 
+           '<a href="http://caniuse.com/bloburls">supported</a>!', true);
+        
+        return;
+    }                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    inputNode.addEventListener('change', playSelectedFile, false);
+}(window));
+</script>
+</body>
+</html>

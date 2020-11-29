@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>liveView</title>
+    <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+      
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+
+</head>
+<body>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
+    <div id="streamList"> </div>
+    <div id="content"> </div>
+    <!-- Or if you want a more recent alpha version -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@alpha"></script> -->
+    
+    
+
+    <script>
+        function playVideos(source,videoID) {
+               
+            var video = document.getElementById(videoID);
+            //var videoSrc = 'http://localhost:8000/live/dupa/index.m3u8';
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(source);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+                console.log(video);
+                });
+            }
+           
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function() {
+                video.play();
+                });
+            }
+        }
+        videojs.options.autoplay = true;
+        videojs.options.muted = true;
+
+        function playVideo(source,videoID) {
+            const videoElem = document.createElement('video');
+            videoElem.classList.add('video-js');
+            videoElem.id = videoID;
+            const sourceElem = document.createElement('source');
+            sourceElem.type = 'application/x-mpegURL';
+            sourceElem.src = source;
+            videoElem.append(sourceElem);
+            //const content = document.querySelector('#content')
+            document.body.append(videoElem);
+
+            videojs(videoElem);
+            videoElem.play();
+        }
+        function getCameraURL(stream_name){
+            var change;
+            stream_name['ip'].substring(0,7)
+            if ( stream_name['ip'].slice(0,7) == '::ffff:')
+                change = stream_name['ip'].substring(7);
+            else if (stream_name['ip'] == "::1")    
+                change = '127.0.0.1'
+            else
+                alert('WHATTS CAMERA IP ADDRESS?!')
+       
+            var camera_url = 'http://' + change + ':5000/fps&res'
+            return camera_url;
+        }
+
+        function createChangeParameterButton(camera_url,stream){
+            /*var button = document.createElement("button");
+            button.innerHTML = "Change!";
+            var body = document.getElementsByTagName("body")[0];
+            body.appendChild(button);*/
+            
+            
+            var array = ["240p","360p","480p","720p"]; 
+            var res = ["320:240","480:360","640:480","960:720"];
+            //var stream = document.getElementsByTagName("stream");
+            //stream.appendChild(button)
+            
+            var myParent = document.body;                 //querySelector('#stream');
+            //Create and append button
+            var button = document.createElement("button");
+            button.id = "changeButton";
+            button.innerHTML = "Change!";
+            myParent.appendChild(button);
+
+            //Create and append select list
+            var selectList = document.createElement("select");
+            selectList.id = "mySelect";
+            myParent.appendChild(selectList);
+
+            //Create and append the options
+            for (var i = 0; i < array.length; i++) {
+                var option = document.createElement("option");
+                option.value = res[i];
+                option.text = array[i];
+                selectList.appendChild(option);
+            }
+            //Create and append fps input
+            var input = document.createElement("input");
+            input.type = "number"
+            input.min = "0"
+            input.max = "30"
+            input.id = "myInput";
+            //var h1 = document.createElement("h1")
+            //h1.before = "fps"
+            //myParent.appendChild(h1);
+            myParent.appendChild(input);
+
+
+            //Create function to post data to flask server (camera)
+            function postInfo(){
+                const resolution = document.querySelector('#mySelect')
+                const fps = document.querySelector("#myInput")
+                
+                
+                const streamfps = fps.value
+                const res = resolution.value
+                button.innerHTML = "Changed!";
+                console.log(streamfps)
+                console.log(res)
+                postData(camera_url, {fps:streamfps, res:res})
+            }
+            button.addEventListener ("click", postInfo);
+        };
+        function createOpenButton(stream){ 
+            if (!document.body.contains(document.getElementById('stream')))
+            var button = document.createElement("button");
+            button.innerHTML = 'Open ' + stream;
+            const streamList = document.querySelector('#streamList')
+            streamList.appendChild(button)
+            button.onclick = async function(){
+                const exam = await fetchInfo();
+                var stream_block = exam['live'][stream]['publisher']
+                const url = ('http://localhost:8000/live/' + stream_block['stream'] + '/index.m3u8')
+                playVideo(url, stream);
+                var camera_url = getCameraURL(stream_block);
+                console.log(camera_url)
+                streamList.removeChild(button)
+                createCloseButton(stream)  //DLACZEGO NIE DZIALA?
+            };
+
+        };
+        //Close stream view - 
+        function createCloseButton(stream){ 
+            if (document.body.contains(document.getElementById(stream))){
+                var button = document.createElement("button");
+                button.innerHTML = 'Close ' + stream;
+                button.id = "closeButton";
+                document.body.appendChild(button);
+                //const streamList = document.querySelector('#streamList')
+                
+                button.onclick = function(){
+                    var currentPlayer = document.getElementById(stream);
+                    videojs(currentPlayer).dispose();
+                    document.body.removeChild(button)
+                    createOpenButton(stream);
+                };
+            }
+        };
+
+        async function postData(url = '', data = {}) {
+        // Default options are marked with *
+            const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'no-cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+            'Content-Type': 'application/json'  // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+        async function fetchInfo() {
+            try {
+                const response = await fetch(`http://localhost:8000/api/streams`, {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                const exam = await response.json();
+                return exam;
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+        async function renderInfo() {
+            const exam = await fetchInfo();
+            const streams = Object.keys(exam.live);
+
+            streams.forEach(stream => {
+                var stream_block = exam['live'][stream]['publisher']
+
+                //debugger;
+                const url = ('http://localhost:8000/live/' + stream_block['stream'] + '/index.m3u8')
+                playVideo(url,stream_block['stream'])
+                
+                var camera_url = getCameraURL(stream_block)
+                console.log(camera_url)
+                createChangeParameterButton(camera_url,stream);
+                createCloseButton(stream);
+                createOpenButton(stream);            
+                console.log(camera_url)                  
+      
+           });
+           
+        };
+        
+        renderInfo();
+        
+        /*var url = ('http://localhost:8000/live/' + 'dupa1' + '/index.m3u8')
+                var obj,source;
+                const stream = 'dupa1'
+                obj = document.createElement('video');
+                $(obj).attr('id', stream);
+                $(obj).attr('class', 'video-js vjs-default-skin');
+                //$(obj).attr('controls', '');
+                //$(obj).attr('autoplay', '');
+                //$(obj).attr('poster', 'http://video-js.zencoder.com/oceans-clip.jpg');
+                //$(obj).attr('preload', 'auto');
+                
+
+                source = document.createElement('url');
+                $(source).attr('type', 'video/mp4');
+                $(source).attr('src', url);
+
+                $("#content").append(obj);
+                $(obj).append(source);
+                videojs(stream, {
+                            controls: true,
+                            autoplay: true,
+                            preload: 'auto'});*/
+
+</script>
+
+
+     <!--
+    <input type="file" id="file-selector" accept= '.mp4'>
+    <script>
+            
+        const fileSelector = document.getElementById('file-selector');
+        fileSelector.addEventListener('change', (event) => {
+            const fileList = event.target.files;
+            console.log(fileList);
+                
+            document.body.innerHTML += '<video controls autoplay> <source src = "./media/live/dupa/2020-11-01-17-10-49.mp4" type="video/mp4"></video>';
+    });
+    </script>
+    -->  
+</body>
+</html>
