@@ -1,0 +1,117 @@
+from flask import *
+import subprocess
+import socket
+import signal
+import hashlib
+from flask_cors import CORS
+from flask import Flask
+from contextlib import closing
+
+from sys import exit
+
+app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+ffmpeg_process = None
+
+
+
+def get_free_port():
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+        s.bind(('', 0))
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        return s.getsockname()[1]
+
+def get_local_ip():
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    return local_ip
+
+def get_server_ip():
+    server_ip = '192.168.1.18'
+    return server_ip
+
+def get_name():
+    stream_name = 'stream'
+    return stream_name
+
+def get_password():
+    password = 'password'
+    return password
+
+
+def create_link(server_ip, stream_name, password):
+    timestamp = '1923350399' #unix time 12/12/2030 @ 11:59pm (UTC) - expiration time
+    sum = '/live/' + stream_name + '-' + timestamp + '-' + password
+    calc_link = hashlib.md5(sum.encode('utf-8')).hexdigest()
+    full_link = 'rtmp://' + server_ip +'/live/' + stream_name + '?sign=' + timestamp + '-' + calc_link
+    print(full_link)
+    return full_link
+
+
+server_ip = get_server_ip()
+name = get_name()
+password = get_password()
+connection_link = create_link(server_ip,name,password)
+
+def default_stream():
+    global ffmpeg_process
+    global server_ip
+    global name
+    global password
+    global connection_link
+
+    #subprocess.call("taskkill.exe /t /f /im ffmpeg.exe")
+    ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
+                        '-re -f lavfi -i testsrc ' +    # Get camera input
+                        '-c:v libx264 ' +               # Codec - H.264
+                        '-b:v 1600k -preset ultrafast -c:a libfdk_aac -b:a 128k -g 25 '+
+                        #'-vf scale=' + res +    # Resolution
+                        #' -r ' + fps +            # FPS
+                        ' -pix_fmt yuv420p ' +  #
+                        '-f flv "' + connection_link  + ' live=true"'
+                        )
+
+@app.route('/<fps><res>', methods=['POST'])
+def index(fps,res):
+    global ffmpeg_process
+    global server_ip
+    global name
+    global password
+    global connection_link
+
+    print(" ---- CLIICKED ---- ")
+    data = request.get_json("data")
+    fps =str(data['fps'])
+    res =str(data['res'])
+
+    if ffmpeg_process is not None:
+        print("SENDING_SIGNAL")
+        ffmpeg_process.send_signal( signal.CTRL_C_EVENT )
+        print("SENT.. WAITING TO KILL FFMPEG")
+        ffmpeg_process.wait()
+
+
+    ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
+                        '-re -f lavfi -i testsrc '+                 #Get camera input -f vfwcap -i 0
+                        '-c:v libx264 '+                            #Codec - H.264
+                        '-b:v 1600k -preset ultrafast -b 900k -c:a libfdk_aac -b:a 128k -g 25 '+ #stream stats
+                        '-vf scale=' + res +                        #Resolution
+                        ' -r ' + fps +                              #FPS
+                        ' -pix_fmt yuv420p ' +                   #
+                        '-f flv "' + connection_link + ' live=true"'
+                        )
+
+    return 'Nothing to see here'
+
+
+def handler(signal_received, frame):
+    # Handle any cleanup here
+    print('SIGINT or CTRL-C detected. ')
+
+signal.signal(signal.SIGINT, handler)
+
+default_stream() #starts stream with default camera setup
+
+local_ip = get_local_ip()
+app.run(host = local_ip)
+
