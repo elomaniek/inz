@@ -11,14 +11,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import Qt
-import time
 import subprocess
-import threading
 import signal
 import psutil
 server = None
 import preview
-
+import os
 
 class IP4Validator(Qt.QValidator):
     def __init__(self, parent=None):
@@ -71,8 +69,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     #Launch Button is used to start flask server and if checkbox - startStreamImmediately is marked, it will start deafult stream
     @pyqtSlot()
     def launch_button(self):
+
         global server
         print( self.lineServerIP.text())
+
+        if os.path.exists('testlog.txt'):
+            os.remove('testlog.txt')
+
         if self.startStreamImmediately.isChecked():
             server = subprocess.Popen('python app.py --ip ' +
                                       self.lineServerIP.text() +
@@ -82,6 +85,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             server = subprocess.Popen('python app.py --do-not-start-stream')
 
         return
+    @pyqtSlot()
+    def launch_preview(self):
+        preview.open_ffplay(self.lineServerIP.text(),self.lineName.text(), self.linePassword.text())
+
     @pyqtSlot()
     def get_logs(self):
         data_list = open('testlog.txt', 'r').readlines()
@@ -102,10 +109,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.connectButton = QtWidgets.QPushButton(self.centralwidget)
-        self.connectButton.setObjectName("connectButton")
-        self.connectButton.clicked.connect(self.launch_button)
-        self.gridLayout_3.addWidget(self.connectButton, 5, 0, 1, 3)
+
         self.startStreamImmediately = QtWidgets.QCheckBox(self.centralwidget)
         self.startStreamImmediately.setWhatsThis("")
         self.startStreamImmediately.setChecked(True)
@@ -124,15 +128,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.labelName = QtWidgets.QLabel(self.centralwidget)
         self.labelName.setObjectName("labelName")
         self.gridLayout_3.addWidget(self.labelName, 1, 0, 1, 1)
-        self.lineName = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineName.setInputMask("")
-        self.lineName.setMaxLength(30)
-        self.lineName.setAlignment(QtCore.Qt.AlignCenter)
-        self.lineName.setObjectName("lineName")
-        regex = QtCore.QRegExp("[0-9a-zA-Z_]+")
-        validator = QtGui.QRegExpValidator(regex)
-        self.lineName.setValidator(validator)
-        self.gridLayout_3.addWidget(self.lineName, 1, 1, 1, 2)
+
+
         self.labelStreamImmediately = QtWidgets.QLabel(self.centralwidget)
         self.labelStreamImmediately.setObjectName("labelStreamImmediately")
         self.gridLayout_3.addWidget(self.labelStreamImmediately, 3, 0, 1, 2)
@@ -149,23 +146,37 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #validator_ip = QtGui.QRegExpValidator(regex_ip)
         #self.lineServerIP.setValidator(validator_ip)
         self.gridLayout_3.addWidget(self.lineServerIP, 0, 1, 1, 2)
+        self.lineName = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineName.setInputMask("")
+        self.lineName.setMaxLength(30)
+        self.lineName.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineName.setObjectName("lineName")
+        regex = QtCore.QRegExp("[0-9a-zA-Z_]+")
+        validator = QtGui.QRegExpValidator(regex)
+        self.lineName.setValidator(validator)
+        self.gridLayout_3.addWidget(self.lineName, 1, 1, 1, 2)
         self.labelPassword = QtWidgets.QLabel(self.centralwidget)
         self.labelPassword.setObjectName("labelPassword")
         self.gridLayout_3.addWidget(self.labelPassword, 2, 0, 1, 1)
-        self.previewButton = QtWidgets.QPushButton(self.centralwidget)
-        self.previewButton.setObjectName("previewButton")
-        self.previewButton.clicked.connect(preview.open_ffplay)
-        self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
+
         self.linePassword = QtWidgets.QLineEdit(self.centralwidget)
         self.linePassword.setMaxLength(30)
         self.linePassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.linePassword.setAlignment(QtCore.Qt.AlignCenter)
         self.linePassword.setObjectName("linePassword")
         self.gridLayout_3.addWidget(self.linePassword, 2, 1, 1, 2)
+        self.connectButton = QtWidgets.QPushButton(self.centralwidget)
+        self.connectButton.setObjectName("connectButton")
+        self.connectButton.clicked.connect(self.launch_button)
+        self.gridLayout_3.addWidget(self.connectButton, 5, 0, 1, 3)
         self.logsButton = QtWidgets.QPushButton(self.centralwidget)
         self.logsButton.setObjectName("logsButton")
         self.logsButton.clicked.connect(self.get_logs)
         self.gridLayout_3.addWidget(self.logsButton, 7, 0, 1, 3)
+        self.previewButton = QtWidgets.QPushButton(self.centralwidget)
+        self.previewButton.setObjectName("previewButton")
+        self.previewButton.clicked.connect(self.launch_preview)
+        self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
