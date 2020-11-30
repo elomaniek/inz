@@ -72,19 +72,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot()
     def launch_button(self):
         global server
-
         print( self.lineServerIP.text())
         if self.startStreamImmediately.isChecked():
-            server = subprocess.Popen('python app.py')#, stderr= open('testlog.txt', 'a'))
+            server = subprocess.Popen('python app.py --ip ' +
+                                      self.lineServerIP.text() +
+                                      ' --name ' + self.lineName.text() +
+                                      ' --pass ' + self.linePassword.text() , stderr= open('testlog.txt', 'a'))
         else:
             server = subprocess.Popen('python app.py --do-not-start-stream')
 
         return
-        
+    @pyqtSlot()
+    def get_logs(self):
+        data_list = open('testlog.txt', 'r').readlines()
+        data_string = ""
+        for line in data_list:
+            data_string += line
+            data_string += '\n'
+
+        ui.appOutput.setPlainText(data_string)
+        ui.appOutput.update()
+        return
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(279, 306)
-        #self.logger = TextIOBase()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Triangular)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -105,22 +117,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.appOutput.setCenterOnScroll(True)
         self.appOutput.setPlaceholderText("")
         self.appOutput.setObjectName("appOutput")
-        self.gridLayout_3.addWidget(self.appOutput, 7, 0, 1, 3)
-        self.lineName = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineName.setInputMask("")
-        self.lineName.setMaxLength(30)
-        self.lineName.setAlignment(QtCore.Qt.AlignCenter)
-        self.lineName.setObjectName("lineName")
-        self.gridLayout_3.addWidget(self.lineName, 1, 1, 1, 2)
+        self.gridLayout_3.addWidget(self.appOutput, 8, 0, 1, 3)
         self.labelServerIP = QtWidgets.QLabel(self.centralwidget)
         self.labelServerIP.setObjectName("labelServerIP")
         self.gridLayout_3.addWidget(self.labelServerIP, 0, 0, 1, 1)
         self.labelName = QtWidgets.QLabel(self.centralwidget)
         self.labelName.setObjectName("labelName")
         self.gridLayout_3.addWidget(self.labelName, 1, 0, 1, 1)
-        self.labelPassword = QtWidgets.QLabel(self.centralwidget)
-        self.labelPassword.setObjectName("labelPassword")
-        self.gridLayout_3.addWidget(self.labelPassword, 2, 0, 1, 1)
+        self.lineName = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineName.setInputMask("")
+        self.lineName.setMaxLength(30)
+        self.lineName.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineName.setObjectName("lineName")
+        regex = QtCore.QRegExp("[0-9a-zA-Z_]+")
+        validator = QtGui.QRegExpValidator(regex)
+        self.lineName.setValidator(validator)
+        self.gridLayout_3.addWidget(self.lineName, 1, 1, 1, 2)
         self.labelStreamImmediately = QtWidgets.QLabel(self.centralwidget)
         self.labelStreamImmediately.setObjectName("labelStreamImmediately")
         self.gridLayout_3.addWidget(self.labelStreamImmediately, 3, 0, 1, 2)
@@ -133,25 +145,32 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lineServerIP.setReadOnly(False)
         self.lineServerIP.setPlaceholderText("")
         self.lineServerIP.setObjectName("lineServerIP")
-        #self.lineServerIP.setInputMask("000.000.000.000")
-        #validator = IP4Validator()
-        #self.lineServerIP.setValidator(validator)
-
+        #regex_ip = QtCore.QRegExp("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+        #validator_ip = QtGui.QRegExpValidator(regex_ip)
+        #self.lineServerIP.setValidator(validator_ip)
         self.gridLayout_3.addWidget(self.lineServerIP, 0, 1, 1, 2)
+        self.labelPassword = QtWidgets.QLabel(self.centralwidget)
+        self.labelPassword.setObjectName("labelPassword")
+        self.gridLayout_3.addWidget(self.labelPassword, 2, 0, 1, 1)
+        self.previewButton = QtWidgets.QPushButton(self.centralwidget)
+        self.previewButton.setObjectName("previewButton")
+        self.previewButton.clicked.connect(preview.open_ffplay)
+        self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
         self.linePassword = QtWidgets.QLineEdit(self.centralwidget)
         self.linePassword.setMaxLength(30)
         self.linePassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.linePassword.setAlignment(QtCore.Qt.AlignCenter)
         self.linePassword.setObjectName("linePassword")
         self.gridLayout_3.addWidget(self.linePassword, 2, 1, 1, 2)
-        self.previewButton = QtWidgets.QPushButton(self.centralwidget)
-        self.previewButton.setObjectName("previewButton")
-        self.previewButton.clicked.connect(preview.open_ffplay)
-        self.gridLayout_3.addWidget(self.previewButton, 6, 0, 1, 3)
+        self.logsButton = QtWidgets.QPushButton(self.centralwidget)
+        self.logsButton.setObjectName("logsButton")
+        self.logsButton.clicked.connect(self.get_logs)
+        self.gridLayout_3.addWidget(self.logsButton, 7, 0, 1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -163,19 +182,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.startStreamImmediately.setText(_translate("MainWindow", "YES"))
         self.labelServerIP.setText(_translate("MainWindow", "Server IP:"))
         self.labelName.setText(_translate("MainWindow", "Name:"))
-        self.labelPassword.setText(_translate("MainWindow", "Password:"))
         self.labelStreamImmediately.setText(_translate("MainWindow", "Do you want to start streaming immediately?"))
-        self.lineServerIP.setInputMask(_translate("MainWindow", "000.000.000.000"))
-        self.lineServerIP.setText(_translate("MainWindow", "..."))
-        #validator = IP4Validator()
-        #self.lineServerIP.setValidator(validator)
+        #self.lineServerIP.setInputMask(_translate("MainWindow", "000.000.000.000"))
+        #self.lineServerIP.setText(_translate("MainWindow", "..."))
+        self.labelPassword.setText(_translate("MainWindow", "Password:"))
         self.previewButton.setText(_translate("MainWindow", "Video Preview"))
+        self.logsButton.setText(_translate("MainWindow", "Get Logs"))
+
+
 
 if __name__ == "__main__":
     import sys
     qt_app = QtWidgets.QApplication(sys.argv)
     ui = Ui_MainWindow()
     ui.setupUi(ui)
-
     ui.show()
+    #ui = ""
+
+  # guiThread.join()
     sys.exit(qt_app.exec_())
