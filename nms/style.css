@@ -1,6 +1,4 @@
-body {
-    background: green;
-}
+
 #root {
     display: flex
 }
@@ -8,8 +6,391 @@ body {
     width: 15%;
     border: solid black 1px;
     height: 100vh;
+}
+
+#content {
+    display: flex;
+    width: 85%;
+    flex-wrap: wrap;
+}
+#divison{
+    border: solid black 1px;
+}
+
+.video-js {
+    position: relative !important;
+    width: 100% !important;
+    height:60%
     
 }
-#content {
-    width: 85%
+
+.vjs-poster {
+    position: absolute !important;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
+
+.streamWindow{
+    width: 50%;
+    height: auto;
+}
+
+
+
+        *::before,
+        *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: inherit;
+        }
+        @import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+        @import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
+        @import url(https://fonts.googleapis.com/css?family=Maven+Pro);
+        /* -- INPUT BOX --*/
+        
+        input[type="number"] {
+            width: 100%;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            margin: 8px 0;
+            outline: none;
+            padding: 8px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #1f8d4d;
+            box-shadow: 0 0 8px 0#1f8d4d;
+        }
+
+        .inputWithIcon input[type="number"] {
+            padding-left: 40px;
+        }
+
+        .inputWithIcon {
+            position: relative;
+        }
+
+        .inputWithIcon i {
+            position: absolute;
+            left: 0;
+            top: 8px;
+            padding: 9px 8px;
+            color: #aaa;
+            transition: 0.3s;
+        }
+
+        .inputWithIcon input[type="number"]:focus + i {
+            color:#1f8d4d transparent;
+        }
+
+        .inputWithIcon.inputIconBg i {
+            background-color: #aaa;
+            color: #fff;
+            padding: 9px 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .inputWithIcon.inputIconBg input[type="number"]:focus + i {
+            color: #fff;
+            background-color: #1f8d4d;
+        }
+        /* -- END OF INPUT BOX */
+
+
+        /* -- SELECT LIST */
+        .wrap-drop {
+            background:#ecf0f1;
+            box-shadow:3px 3px 3px rgba(0,0,0,.2);
+            cursor:pointer;
+            margin:0 auto;
+            max-width:225px;
+            padding:1rem;
+            position:relative;
+            width:75%;
+            z-index:3;
+        }
+
+        .wrap-drop::after {
+            border-color:#1f8d4d transparent;
+            border-style:solid;
+            border-width:10px 10px 0;
+            content:"";
+            height:0;
+            margin-top:-4px;
+            position:absolute;
+            right:1rem;
+            top:50%;
+            width:0;
+        }
+
+        .wrap-drop .drop {
+            background:#ecf0f1;
+            box-shadow:3px 3px 3px rgba(0,0,0,.2);
+            display:none;
+            left:0;
+            list-style:none;
+            margin-top:0;
+            opacity:0;
+            padding-left:0;
+            pointer-events:none;
+            position:absolute;
+            right:0;
+            top:100%;
+            z-index:2;
+        }
+
+        .wrap-drop .drop li a {
+            color:#6c798b;
+            display:block;
+            padding:1rem;
+            text-decoration:none;
+        }
+
+        .wrap-drop span {
+            color:#6c798b;
+        }
+
+        .wrap-drop .drop li:hover a {
+            background-color:#faf2c6;
+            color:#6c798b;
+        }
+
+        .wrap-drop.active::after {
+            border-width:0 10px 10px;
+        }
+
+        .wrap-drop.active .drop {
+            display:block;
+            opacity:1;
+            pointer-events:auto;
+        }
+        /* -- END OF SELECT LIST -- */
+
+        /* -- CHANGE BUTTON --*/
+        .jumbotron h1 {
+            color: #353535;
+        }
+        footer {
+            margin-bottom: 0 !important;
+            margin-top: 80px;
+        }
+        footer p {
+            margin: 0;
+            padding: 0;
+        }
+        span.icon {
+            margin: 0 5px;
+            color: #ecf0f1;
+        }
+        h2 {
+            color: #BDC3C7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        p {
+            color: #BDC3C7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Lato', sans-serif;
+            text-align: center;
+        }
+        .mrng-60-top {
+            margin-top: 60px;
+        }
+        /* Global Button Styles */
+        a.animated-button:link, a.animated-button:visited {
+            position: relative;
+            display: block;
+            margin: 30px auto 0;
+            padding: 14px 15px;
+            color: #fff;
+            font-size:14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            letter-spacing: .08em;
+            border-radius: 0;
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+        a.animated-button:link:after, a.animated-button:visited:after {
+            content: "";
+            position: absolute;
+            height: 0%;
+            left: 50%;
+            top: 50%;
+            width: 150%;
+            z-index: -1;
+            -webkit-transition: all 0.75s ease 0s;
+            -moz-transition: all 0.75s ease 0s;
+            -o-transition: all 0.75s ease 0s;
+            transition: all 0.75s ease 0s;
+        }
+        a.animated-button:link:hover, a.animated-button:visited:hover {
+            color: #ecf0f1;
+            text-shadow: none;
+        }
+        a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
+            height: 450%;
+        }
+        a.animated-button:link, a.animated-button:visited {
+            position: relative;
+            display: block;
+            margin: 30px auto 0;
+            padding: 14px 15px;
+            color: #ecf0f1;
+            font-size:14px;
+            border-radius: 0;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            letter-spacing: .08em;
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+
+        /* Victoria Buttons */
+
+        a.animated-button.victoria-one {
+            border: 2px solid #ecf0f1;
+        }
+        a.animated-button.victoria-one:after {
+            background: #1f8d4d;
+            -moz-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            -ms-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            -webkit-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+        }
+        /* -- END OF CHANGE BUTTON --*/
+        /* -- BACKGROUND AND MAIN FONT --*/
+        html {
+          box-sizing: border-box;
+          background: #6c798b;
+          font-family: 'Lato', sans-serif;
+          font-size: 15px;
+          line-height: 5px;
+          color: #ecf0f1;
+        }
+        .p1 {
+            font-family: 'Lato', sans-serif;
+            font-size: 10px;
+            line-height: 5px;
+            color: #ecf0f1;
+        }
+        /* -- END OF BACKGROUND AND MAIN FONT --*/
+        /* .viewCheckbox CHECKBOX*/
+        .viewCheckbox {
+            width: 28px;
+            height: 28px;
+            position: relative;
+            margin: 20px auto;
+            background: #fcfff4;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fcfff4), color-stop(40%, #dfe5d7), to(#b3bead));
+            background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+            border-radius: 50px;
+            box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .viewCheckbox label {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            background: -webkit-gradient(linear, left top, left bottom, from(#222222), to(#45484d));
+            background: linear-gradient(to bottom, #222222 0%, #45484d 100%);
+            border-radius: 50px;
+            box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
+        }
+        .viewCheckbox label:after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: #27ae60;
+            background: -webkit-gradient(linear, left top, left bottom, from(#27ae60), to(#145b32));
+            background: linear-gradient(to bottom, #27ae60 0%, #145b32 100%);
+            opacity: 0;
+            border-radius: 50px;
+            box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .viewCheckbox label:hover::after {
+            opacity: 0.3;
+        }
+        .viewCheckbox input[type="checkbox"] {
+            visibility: hidden;
+        }
+        .viewCheckbox input[type="checkbox"]:checked + label:after {
+            opacity: 1;
+        }
+
+        /* end .viewCheckbox CHECKBOX*/
+        /* .slideThree CHACKBOX*/
+        .slideThree {
+            width: 80px;
+            height: 26px;
+            background: #333;
+            margin: 20px auto;
+            position: relative;
+            border-radius: 50px;
+            box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+        }
+        .slideThree:after {
+            content: 'OFF';
+            color: #000;
+            position: absolute;
+            right: 10px;
+            z-index: 0;
+            font: 12px/26px Arial, sans-serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.15);
+        }
+        .slideThree:before {
+            content: 'ON';
+            color: #27ae60;
+            position: absolute;
+            left: 10px;
+            z-index: 0;
+            font: 12px/26px Arial, sans-serif;
+            font-weight: bold;
+        }
+        .slideThree label {
+            display: block;
+            width: 34px;
+            height: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            z-index: 1;
+            background: #fcfff4;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fcfff4), color-stop(40%, #dfe5d7), to(#b3bead));
+            background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+            border-radius: 50px;
+            -webkit-transition: all 0.4s ease;
+            transition: all 0.4s ease;
+            box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        .slideThree input[type=checkbox] {
+            visibility: hidden;
+        }
+        .slideThree input[type=checkbox]:checked + label {
+            left: 43px;
+        }
+        /* end .slideThree CHECKBOX*/

@@ -18,7 +18,13 @@
     <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
 
     <div id="root">
-        <div id="streamList"> </div>
+        <div id="streamList"> 
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <a href="#" class="btn btn-sm animated-button victoria-one" id = "archiwum">Archiwum</a> 
+                
+            </div>
+            
+        </div>
         <div id="content"> </div>
     </div>
     <!-- Or if you want a more recent alpha version -->
@@ -27,6 +33,9 @@
     
 
     <script>
+        document.getElementById("archiwum").onclick = function () {
+                location.href = "vplayer.html";
+        };
 
         const streamList = document.querySelector('#streamList')
         const content = document.querySelector('#content')
@@ -62,9 +71,11 @@
             sourceElem.type = 'application/x-mpegURL';
             sourceElem.src = source;
             videoElem.append(sourceElem);
-            
-            content.append(videoElem);
-
+            const streamDiv = document.createElement("div")
+            streamDiv.id = videoID
+            streamDiv.append(videoElem);
+            streamDiv.classList.add("streamWindow")
+            content.append(streamDiv);
             videojs(videoElem);
             videoElem.play();
         }
@@ -82,8 +93,60 @@
             return camera_url;
         }
 
-        function printStreamName(){
+        function printStreamName(stream){
+
+            const nameDiv = document.createElement("div");
+            const name = document.createElement("p");
+            name.innerText = stream;
+
+            const checkboxSection = document.createElement('section');
+            checkboxSection.title = ".viewCheckbox"
+
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.classList.add("viewCheckbox");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = "None";
+            checkbox.id = "viewCheckbox";
+            checkbox.name = "check";
+            checkbox.checked = "true";
+
+            const checkboxLabel = document.createElement("label")
+            checkboxLabel.for = "viewCheckbox";
+
+            checkboxDiv.appendChild(checkbox)
+            checkboxDiv.appendChild(checkboxLabel)
+            checkboxSection.appendChild(checkboxDiv)
+
             
+            nameDiv.appendChild(name)
+            nameDiv.appendChild(checkboxSection)
+            nameDiv.id = stream +"1"
+            streamList.appendChild(nameDiv)
+
+            checkbox.onclick = function(){
+ 
+            if(this.checked) {
+                const addStream = async function(){
+                    const exam = await fetchInfo();
+                    var stream_block = exam['live'][stream]['publisher']
+                    const url = ('http://localhost:8000/live/' + stream_block['stream'] + '/index.m3u8')
+                    playVideo(url, stream);
+                    createChangeParameterButton(url,stream);
+                    var camera_url = getCameraURL(stream_block);
+                    console.log(camera_url)
+                }
+                addStream()
+            }
+            else {
+                var currentPlayer = document.getElementById(stream);
+                videojs(currentPlayer).dispose();
+                
+                console.log('Press checkbox again to view ' + stream)
+            }
+            }
+           
         }
 
         function createChangeParameterButton(camera_url,stream){
@@ -92,58 +155,152 @@
             var body = document.getElementsByTagName("body")[0];
             body.appendChild(button);*/
             
-            
-            var array = ["240p","360p","480p","720p"]; 
-            var res = ["320:240","480:360","640:480","960:720"];
-            //var stream = document.getElementsByTagName("stream");
-            //stream.appendChild(button)
-            
-            var myParent = content;                 //querySelector('#stream');
+            const buttonDiv = document.createElement("div");
+            buttonDiv.classList.add(stream);
+            var myParent = buttonDiv;                 
+
             //Create and append button
-            var button = document.createElement("button");
-            button.id = "changeButton";
-            button.innerHTML = "Change!";
+            
+            var button = document.createElement('div');
+            button.classList.add("col-md-3", "col-sm-3", "col-xs-6")
+            button.id = "myButton"
+            var getBootstrap = document.createElement('a')
+            getBootstrap.href = "#";
+            getBootstrap.classList.add("btn", "btn-sm", "animated-button", "victoria-one");
+            getBootstrap.text = "Change";
+            button.append(getBootstrap);       
             myParent.appendChild(button);
+            
 
             //Create and append select list
             var selectList = document.createElement("select");
-            selectList.id = "mySelect";
+            selectList.id = "mySelect" + stream;
             myParent.appendChild(selectList);
 
+
+
             //Create and append the options
+            var array = ["240p","360p","480p","720p"]; 
+            var res = ["320:240","480:360","640:480","960:720"];
             for (var i = 0; i < array.length; i++) {
                 var option = document.createElement("option");
                 option.value = res[i];
                 option.text = array[i];
                 selectList.appendChild(option);
             }
+
+ /*           var selectDiv = document.createElement("div")
+            selectDiv.classList.add("wrap-drop");
+            selectDiv.id = "noble-gases"
+
+            var span = document.createElement("span");
+            span.textContent = "Choose Resolution"
+
+            var ul = document.createElement("ul")
+            ul.class = "drop";
+
+            for (var i = 0; i < array.length; i++) {
+                var li = document.createElement("li");
+                var a = document.createElement('a');
+
+
+                a.value = res[i];
+                
+                li.appendChild(a)
+                ul.appendChild(li);
+            }
+            span.appendChild(ul)
+            selectDiv.appendChild(span)
+            myParent.appendChild(selectDiv)
+            
+            function DropDown(el) {
+            this.dd = el;
+            this.placeholder = this.dd.children('span');
+            this.opts = this.dd.find('ul.drop li');
+            this.val = '';
+            this.index = -1;
+            this.initEvents();
+        }
+
+        DropDown.prototype = {
+            initEvents: function () {
+                var obj = this;
+                obj.dd.on('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).toggleClass('active');
+        });
+        obj.opts.on('click', function () {
+            var opt = $(this);
+            obj.val = opt.text();
+            obj.index = opt.index();
+            obj.placeholder.text(obj.val);
+            opt.siblings().removeClass('selected');
+            opt.filter(':contains("' + obj.val + '")').addClass('selected');
+        }).change();
+        },
+        getValue: function () {
+            return this.val;
+        },
+        getIndex: function () {
+            return this.index;
+        }
+    };
+
+    $(function () {
+        // create new variable for each menu
+        var dd1 = new DropDown($('#noble-gases'));
+        // var dd2 = new DropDown($('#other-gases'));
+        $(document).click(function () {
+            // close menu on document click
+            $('.wrap-drop').removeClass('active');
+        });
+    });
+
+*/
+
             //Create and append fps input
             var input = document.createElement("input");
             input.type = "number"
             input.min = "0"
             input.max = "30"
-            input.id = "myInput";
+            input.id = "myInput" + stream;
+            input.placeholder = "FPS (1-30 accepted)"
             //var h1 = document.createElement("h1")
             //h1.before = "fps"
             //myParent.appendChild(h1);
             myParent.appendChild(input);
+            var streamName = document.createElement("h2")
+            streamName.innerText = stream;
+            myParent.append(streamName)
 
+            const mergeDiv = document.querySelector("#" + stream)
+            mergeDiv.append(myParent);
 
             //Create function to post data to flask server (camera)
             function postInfo(){
-                const resolution = document.querySelector('#mySelect')
-                const fps = document.querySelector("#myInput")
+                const resolution = document.querySelector('#mySelect'+stream)
+                const fps = document.querySelector("#myInput"+stream)
                 
                 
-                const streamfps = fps.value
+                const streamfps = Math.round(fps.value)
+
                 const res = resolution.value
-                button.innerHTML = "Changed!";
-                console.log(streamfps)
-                console.log(res)
-                postData(camera_url, {fps:streamfps, res:res})
+
+                if (streamfps <= 30 && streamfps >= 1 ){
+                    
+                    console.log(streamfps)
+                    console.log(res)
+                    postData(camera_url, {fps:streamfps, res:res})
+                }
+                else {
+                    alert ("Please insert FPS 1-30")
+                }
+
             }
             button.addEventListener ("click", postInfo);
         };
+
         function createOpenButton(stream){ 
             if (!content.contains(document.getElementById('stream')))
             var button = document.createElement("button");
@@ -179,26 +336,6 @@
                 };
             }
         };
-        function createCheckBox(stream){
-            console.log(stream)
-            document.head.innerHTML =   '<section title=".roundedOne">' +
-                                            +'<div class="roundedOne">' +
-                                               + '<input type="checkbox" value="None" id="roundedOne" name="check" checked />'+
-                                                +'<label for="roundedOne"></label>'+
-                                           + '</div>'+
-                                        +'</section>'
-                                                   
-            var checkbox = document.getElementById('roundedOne')
-            console.log(stream)
-            checkbox.onclick = function(){
-            if(this.checked) {
-                console.log('tak')   
-            }
-            else {
-                console.log('nie')
-            }
-            }
-        }
 
         async function postData(url = '', data = {}) {
         // Default options are marked with *
@@ -243,9 +380,7 @@
                 var camera_url = getCameraURL(stream_block)
                 console.log(camera_url)
                 createChangeParameterButton(camera_url,stream);
-                createCloseButton(stream);
-                createOpenButton(stream);   
-                //createCheckBox(stream);        
+                printStreamName(stream);      
                 console.log(camera_url);                  
       
            });
@@ -254,7 +389,49 @@
         
         renderInfo();
        
+        function DropDown(el) {
+            this.dd = el;
+            this.placeholder = this.dd.children('span');
+            this.opts = this.dd.find('ul.drop li');
+            this.val = '';
+            this.index = -1;
+            this.initEvents();
+        }
 
+        DropDown.prototype = {
+            initEvents: function () {
+                var obj = this;
+                obj.dd.on('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).toggleClass('active');
+        });
+        obj.opts.on('click', function () {
+            var opt = $(this);
+            obj.val = opt.text();
+            obj.index = opt.index();
+            obj.placeholder.text(obj.val);
+            opt.siblings().removeClass('selected');
+            opt.filter(':contains("' + obj.val + '")').addClass('selected');
+        }).change();
+        },
+        getValue: function () {
+            return this.val;
+        },
+        getIndex: function () {
+            return this.index;
+        }
+    };
+
+    $(function () {
+        // create new variable for each menu
+        var dd1 = new DropDown($('#noble-gases'));
+        // var dd2 = new DropDown($('#other-gases'));
+        $(document).click(function () {
+            // close menu on document click
+            $('.wrap-drop').removeClass('active');
+        });
+    });
         
         /*var url = ('http://localhost:8000/live/' + 'dupa1' + '/index.m3u8')
                 var obj,source;
@@ -280,20 +457,5 @@
                             preload: 'auto'});*/
 
 </script>
-
-
-     <!--
-    <input type="file" id="file-selector" accept= '.mp4'>
-    <script>
-            
-        const fileSelector = document.getElementById('file-selector');
-        fileSelector.addEventListener('change', (event) => {
-            const fileList = event.target.files;
-            console.log(fileList);
-                
-            document.body.innerHTML += '<video controls autoplay> <source src = "./media/live/dupa/2020-11-01-17-10-49.mp4" type="video/mp4"></video>';
-    });
-    </script>
-    -->  
 </body>
 </html>

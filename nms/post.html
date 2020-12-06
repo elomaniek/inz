@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>post</title>
@@ -251,7 +252,7 @@
         }
         /* -- END OF BACKGROUND AND MAIN FONT --*/
         /* .roundedOne CHECKBOX*/
-        .roundedOne {
+        .viewCheckbox {
             width: 28px;
             height: 28px;
             position: relative;
@@ -262,7 +263,7 @@
             border-radius: 50px;
             box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .roundedOne label {
+        .viewCheckbox label {
             width: 20px;
             height: 20px;
             cursor: pointer;
@@ -274,7 +275,7 @@
             border-radius: 50px;
             box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
         }
-        .roundedOne label:after {
+        .viewCheckbox label:after {
             content: "";
             width: 16px;
             height: 16px;
@@ -288,13 +289,13 @@
             border-radius: 50px;
             box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .roundedOne label:hover::after {
+        .viewCheckbox label:hover::after {
             opacity: 0.3;
         }
-        .roundedOne input[type="checkbox"] {
+        .viewCheckbox input[type="checkbox"] {
             visibility: hidden;
         }
-        .roundedOne input[type="checkbox"]:checked + label:after {
+        .viewCheckbox input[type="checkbox"]:checked + label:after {
             opacity: 1;
         }
 
@@ -384,8 +385,13 @@
             <li><a>Radon</a></li>
         </ul>
     </div>
-    <div class="row">
-        <div class="col-md-3 col-sm-3 col-xs-6"> <a href="#" class="btn btn-sm animated-button victoria-one">Change</a> </div>
+
+    
+    <div class="row"></div>
+        
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <a href="#" class="btn btn-sm animated-button victoria-one">Change</a> 
+        </div>
    
 
 
@@ -394,6 +400,7 @@
       <input type="number" min="1" max = "30" placeholder="FPS">
 
       <script>
+          
  /*       var wrapper = document.body;
        var input = document.querySelector('#inputWithIcon')
         input.type = 'number'
@@ -446,21 +453,28 @@
         });
     });
 
-            
-            
+            const wrapper = document.body;
+            const checkboxSection = document.createElement('section');
+            checkboxSection.title = ".viewCheckbox"
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.classList.add("viewCheckbox")
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = "None";
+            checkbox.id = "viewCheckbox";
+            checkbox.name = "check";
+            checkbox.checked = "true";
+            const checkboxLabel = document.createElement("label")
+            checkboxLabel.for = "viewCheckbox";
+            //checkbox.classList.add("viewCheckbox")
+            checkboxDiv.appendChild(checkbox)
+            checkboxDiv.appendChild(checkboxLabel)
+            checkboxSection.appendChild(checkboxDiv)
+            wrapper.append(checkboxSection)
 
-           var checkboxx = document.getElementById('reoundedOne')
-            checkbox.onclick = function(){
-                if(this.checked) {
-                        console.log('tak')   
-                    }
-                    else {
-                        console.log('nie')
-                    }
-                }
-            
+
         </script>
-        <h1>Hello</h1>
+        
     
 </body>
 </html>
