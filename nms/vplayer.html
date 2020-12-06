@@ -14,11 +14,11 @@
         
         html {
           box-sizing: border-box;
-          background: #263238;
+          background:#6c798b;
         }
         
         .container {
-          background: #263238;
+          background: #6c798b;
           min-height: 100vh;
           display: grid;
           grid-template-columns: 1fr 80vw 1fr;
@@ -314,15 +314,13 @@
 
                 // GETTING DATE
                 const nameMP4 = fileList[0].name.replaceAll('-',':')
-                
-
                 String.prototype.replaceAt = function(index, replacement) {
                     return this.substr(0, index) + replacement + this.substr(index + replacement.length);
                 }
                 const name = nameMP4.replaceAt(10,' ');
                 const date = name.slice(0,-4)
-                //Getting file size 
 
+                //Getting file size 
                 var size = fileList[0].size/1000000
                 size = Math.round(size) + ' MB'
                 
@@ -330,21 +328,7 @@
                 const unixTimestamp = fileList[0].lastModified
                 const dateObject = new Date(unixTimestamp)
                 const humanDateFormat = dateObject.toLocaleString()
-                alert(humanDateFormat)
-            
-
-
-
-
-                
-
-                
-                
-
-
-
-
-          
+                alert(humanDateFormat)      
                 //console.log(fileList);
                 
             });

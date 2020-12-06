@@ -5,23 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>liveView</title>
     <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
       
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+
 
 </head>
 <body>
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
-    <div id="streamList"> </div>
-    <div id="content"> </div>
+
+    <div id="root">
+        <div id="streamList"> </div>
+        <div id="content"> </div>
+    </div>
     <!-- Or if you want a more recent alpha version -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@alpha"></script> -->
     
     
 
     <script>
+
+        const streamList = document.querySelector('#streamList')
+        const content = document.querySelector('#content')
         function playVideos(source,videoID) {
                
             var video = document.getElementById(videoID);
@@ -54,8 +62,8 @@
             sourceElem.type = 'application/x-mpegURL';
             sourceElem.src = source;
             videoElem.append(sourceElem);
-            //const content = document.querySelector('#content')
-            document.body.append(videoElem);
+            
+            content.append(videoElem);
 
             videojs(videoElem);
             videoElem.play();
@@ -74,6 +82,10 @@
             return camera_url;
         }
 
+        function printStreamName(){
+            
+        }
+
         function createChangeParameterButton(camera_url,stream){
             /*var button = document.createElement("button");
             button.innerHTML = "Change!";
@@ -86,7 +98,7 @@
             //var stream = document.getElementsByTagName("stream");
             //stream.appendChild(button)
             
-            var myParent = document.body;                 //querySelector('#stream');
+            var myParent = content;                 //querySelector('#stream');
             //Create and append button
             var button = document.createElement("button");
             button.id = "changeButton";
@@ -133,10 +145,10 @@
             button.addEventListener ("click", postInfo);
         };
         function createOpenButton(stream){ 
-            if (!document.body.contains(document.getElementById('stream')))
+            if (!content.contains(document.getElementById('stream')))
             var button = document.createElement("button");
             button.innerHTML = 'Open ' + stream;
-            const streamList = document.querySelector('#streamList')
+            
             streamList.appendChild(button)
             button.onclick = async function(){
                 const exam = await fetchInfo();
@@ -152,7 +164,7 @@
         };
         //Close stream view - 
         function createCloseButton(stream){ 
-            if (document.body.contains(document.getElementById(stream))){
+            if (content.contains(document.getElementById(stream))){
                 var button = document.createElement("button");
                 button.innerHTML = 'Close ' + stream;
                 button.id = "closeButton";
@@ -167,6 +179,26 @@
                 };
             }
         };
+        function createCheckBox(stream){
+            console.log(stream)
+            document.head.innerHTML =   '<section title=".roundedOne">' +
+                                            +'<div class="roundedOne">' +
+                                               + '<input type="checkbox" value="None" id="roundedOne" name="check" checked />'+
+                                                +'<label for="roundedOne"></label>'+
+                                           + '</div>'+
+                                        +'</section>'
+                                                   
+            var checkbox = document.getElementById('roundedOne')
+            console.log(stream)
+            checkbox.onclick = function(){
+            if(this.checked) {
+                console.log('tak')   
+            }
+            else {
+                console.log('nie')
+            }
+            }
+        }
 
         async function postData(url = '', data = {}) {
         // Default options are marked with *
@@ -212,14 +244,17 @@
                 console.log(camera_url)
                 createChangeParameterButton(camera_url,stream);
                 createCloseButton(stream);
-                createOpenButton(stream);            
-                console.log(camera_url)                  
+                createOpenButton(stream);   
+                //createCheckBox(stream);        
+                console.log(camera_url);                  
       
            });
            
         };
         
         renderInfo();
+       
+
         
         /*var url = ('http://localhost:8000/live/' + 'dupa1' + '/index.m3u8')
                 var obj,source;

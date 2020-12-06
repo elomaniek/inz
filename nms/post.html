@@ -3,9 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-       /* .roundedOne */
+    <title>post</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>*,
+        *::before,
+        *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: inherit;
+        }
+        @import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+        @import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
+        @import url(https://fonts.googleapis.com/css?family=Maven+Pro);
+        /* -- INPUT BOX --*/
+        input[type="number"] {
+            width: 100%;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            margin: 8px 0;
+            outline: none;
+            padding: 8px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #1f8d4d;
+            box-shadow: 0 0 8px 0#1f8d4d;
+        }
+
+        .inputWithIcon input[type="number"] {
+            padding-left: 40px;
+        }
+
+        .inputWithIcon {
+            position: relative;
+        }
+
+        .inputWithIcon i {
+            position: absolute;
+            left: 0;
+            top: 8px;
+            padding: 9px 8px;
+            color: #aaa;
+            transition: 0.3s;
+        }
+
+        .inputWithIcon input[type="number"]:focus + i {
+            color:#1f8d4d transparent;
+        }
+
+        .inputWithIcon.inputIconBg i {
+            background-color: #aaa;
+            color: #fff;
+            padding: 9px 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .inputWithIcon.inputIconBg input[type="number"]:focus + i {
+            color: #fff;
+            background-color: #1f8d4d;
+        }
+        /* -- END OF INPUT BOX */
+
+
+        /* -- SELECT LIST */
+        .wrap-drop {
+            background:#ecf0f1;
+            box-shadow:3px 3px 3px rgba(0,0,0,.2);
+            cursor:pointer;
+            margin:0 auto;
+            max-width:225px;
+            padding:1rem;
+            position:relative;
+            width:75%;
+            z-index:3;
+        }
+
+        .wrap-drop::after {
+            border-color:#1f8d4d transparent;
+            border-style:solid;
+            border-width:10px 10px 0;
+            content:"";
+            height:0;
+            margin-top:-4px;
+            position:absolute;
+            right:1rem;
+            top:50%;
+            width:0;
+        }
+
+        .wrap-drop .drop {
+            background:#ecf0f1;
+            box-shadow:3px 3px 3px rgba(0,0,0,.2);
+            display:none;
+            left:0;
+            list-style:none;
+            margin-top:0;
+            opacity:0;
+            padding-left:0;
+            pointer-events:none;
+            position:absolute;
+            right:0;
+            top:100%;
+            z-index:2;
+        }
+
+        .wrap-drop .drop li a {
+            color:#6c798b;
+            display:block;
+            padding:1rem;
+            text-decoration:none;
+        }
+
+        .wrap-drop span {
+            color:#6c798b;
+        }
+
+        .wrap-drop .drop li:hover a {
+            background-color:#faf2c6;
+            color:#6c798b;
+        }
+
+        .wrap-drop.active::after {
+            border-width:0 10px 10px;
+        }
+
+        .wrap-drop.active .drop {
+            display:block;
+            opacity:1;
+            pointer-events:auto;
+        }
+        /* -- END OF SELECT LIST -- */
+        /* -- CHANGE BUTTON --*/
+        .jumbotron h1 {
+            color: #353535;
+        }
+        footer {
+            margin-bottom: 0 !important;
+            margin-top: 80px;
+        }
+        footer p {
+            margin: 0;
+            padding: 0;
+        }
+        span.icon {
+            margin: 0 5px;
+            color: #ecf0f1;
+        }
+        h2 {
+            color: #BDC3C7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .mrng-60-top {
+            margin-top: 60px;
+        }
+        /* Global Button Styles */
+        a.animated-button:link, a.animated-button:visited {
+            position: relative;
+            display: block;
+            margin: 30px auto 0;
+            padding: 14px 15px;
+            color: #fff;
+            font-size:14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            letter-spacing: .08em;
+            border-radius: 0;
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+        a.animated-button:link:after, a.animated-button:visited:after {
+            content: "";
+            position: absolute;
+            height: 0%;
+            left: 50%;
+            top: 50%;
+            width: 150%;
+            z-index: -1;
+            -webkit-transition: all 0.75s ease 0s;
+            -moz-transition: all 0.75s ease 0s;
+            -o-transition: all 0.75s ease 0s;
+            transition: all 0.75s ease 0s;
+        }
+        a.animated-button:link:hover, a.animated-button:visited:hover {
+            color: #ecf0f1;
+            text-shadow: none;
+        }
+        a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
+            height: 450%;
+        }
+        a.animated-button:link, a.animated-button:visited {
+            position: relative;
+            display: block;
+            margin: 30px auto 0;
+            padding: 14px 15px;
+            color: #ecf0f1;
+            font-size:14px;
+            border-radius: 0;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            letter-spacing: .08em;
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+
+        /* Victoria Buttons */
+
+        a.animated-button.victoria-one {
+            border: 2px solid #ecf0f1;
+        }
+        a.animated-button.victoria-one:after {
+            background: #1f8d4d;
+            -moz-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            -ms-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            -webkit-transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+            transform: translateX(-50%) translateY(-50%) rotate(-25deg);
+        }
+        /* -- END OF CHANGE BUTTON --*/
+        /* -- BACKGROUND AND MAIN FONT --*/
+        html {
+          box-sizing: border-box;
+          background: #6c798b;
+          font-family: 'Lato', sans-serif;
+          font-size: 15px;
+          line-height: 5px;
+          color: #ecf0f1;
+        }
+        .p1 {
+            font-family: 'Lato', sans-serif;
+            font-size: 10px;
+            line-height: 5px;
+            color: #ecf0f1;
+        }
+        /* -- END OF BACKGROUND AND MAIN FONT --*/
+        /* .roundedOne CHECKBOX*/
         .roundedOne {
             width: 28px;
             height: 28px;
@@ -53,33 +298,169 @@
             opacity: 1;
         }
 
-        /* end .roundedOne */
-    </style>
-</head>
-<body>
-    <button type="button" class="btn btn-outline-primary">
-        Example button
-        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-camera-video" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5zm11.5 5.175l3.5 1.556V4.269l-3.5 1.556v4.35zM2 4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H2z"></path>
-</svg>
+        /* end .roundedOne CHECKBOX*/
+        /* .slideThree CHACKBOX*/
+        .slideThree {
+            width: 80px;
+            height: 26px;
+            background: #333;
+            margin: 20px auto;
+            position: relative;
+            border-radius: 50px;
+            box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+        }
+        .slideThree:after {
+            content: 'OFF';
+            color: #000;
+            position: absolute;
+            right: 10px;
+            z-index: 0;
+            font: 12px/26px Arial, sans-serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.15);
+        }
+        .slideThree:before {
+            content: 'ON';
+            color: #27ae60;
+            position: absolute;
+            left: 10px;
+            z-index: 0;
+            font: 12px/26px Arial, sans-serif;
+            font-weight: bold;
+        }
+        .slideThree label {
+            display: block;
+            width: 34px;
+            height: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            z-index: 1;
+            background: #fcfff4;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fcfff4), color-stop(40%, #dfe5d7), to(#b3bead));
+            background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+            border-radius: 50px;
+            -webkit-transition: all 0.4s ease;
+            transition: all 0.4s ease;
+            box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        .slideThree input[type=checkbox] {
+            visibility: hidden;
+        }
+        .slideThree input[type=checkbox]:checked + label {
+            left: 43px;
+        }
+        /* end .slideThree CHECKBOX*/
 
-      </button>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-camera-video-off" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M10.961 12.365a1.99 1.99 0 0 0 .522-1.103l3.11 1.382A1 1 0 0 0 16 11.731V4.269a1 1 0 0 0-1.406-.913l-3.111 1.382A2 2 0 0 0 9.5 3H4.272l.714 1H9.5a1 1 0 0 1 1 1v6a1 1 0 0 1-.144.518l.605.847zM1.428 4.18A.999.999 0 0 0 1 5v6a1 1 0 0 0 1 1h5.014l.714 1H2a2 2 0 0 1-2-2V5c0-.675.334-1.272.847-1.634l.58.814zM15 11.73l-3.5-1.555v-4.35L15 4.269v7.462zm-4.407 3.56l-10-14 .814-.58 10 14-.814.58z"/>
-      </svg>
+
+    </style>
+      <section title=".slideThree">
+        <!-- .slideThree -->
+        <div class="slideThree">  
+          <input type="checkbox" value="None" id="slideThree" name="check" checked />
+          <label for="slideThree"></label>
+        </div>
+        <!-- end .slideThree -->
+      </section>
+
+    <section title=".roundedOne">
+        <!-- .roundedOne -->
+        <div class="roundedOne">
+            <input type="checkbox" value="None" id="roundedOne" name="check" checked />
+            <label for="roundedOne"></label>
+        </div>
+        <!-- end .roundedOne -->
+    </section>
+    <div class="wrap-drop" id="noble-gases">
+        <span>All Noble Gases</span>
+        <ul class="drop">
+            <li class="selected"><a>All Noble Gases</a></li>
+            <li><a>Helium</a></li>
+            <li><a>Neon</a></li>
+            <li><a>Argon</a></li>
+            <li><a>Krypton</a></li>
+            <li><a>Xenon</a></li>
+            <li><a>Radon</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-3 col-xs-6"> <a href="#" class="btn btn-sm animated-button victoria-one">Change</a> </div>
+   
+
+
+    </head>
+<body>      
+      <input type="number" min="1" max = "30" placeholder="FPS">
+
       <script>
-          
-          var checkbox = document.getElementById('roundedOne')
-          document.getElementById('roundedOne').onclick = function(){
-              if(this.checked) {
-                  console.log(this.value)
-                
-              }
-              else {
-                  console.log(this.value)
-              }
-          }
-      </script>
+ /*       var wrapper = document.body;
+       var input = document.querySelector('#inputWithIcon')
+        input.type = 'number'
+        input.min = '1'
+        input.max = '30'
+
+        wrapper.appendChild(input)*/
+        
+        function DropDown(el) {
+            this.dd = el;
+            this.placeholder = this.dd.children('span');
+            this.opts = this.dd.find('ul.drop li');
+            this.val = '';
+            this.index = -1;
+            this.initEvents();
+        }
+
+        DropDown.prototype = {
+            initEvents: function () {
+                var obj = this;
+                obj.dd.on('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).toggleClass('active');
+        });
+        obj.opts.on('click', function () {
+            var opt = $(this);
+            obj.val = opt.text();
+            obj.index = opt.index();
+            obj.placeholder.text(obj.val);
+            opt.siblings().removeClass('selected');
+            opt.filter(':contains("' + obj.val + '")').addClass('selected');
+        }).change();
+        },
+        getValue: function () {
+            return this.val;
+        },
+        getIndex: function () {
+            return this.index;
+        }
+    };
+
+    $(function () {
+        // create new variable for each menu
+        var dd1 = new DropDown($('#noble-gases'));
+        // var dd2 = new DropDown($('#other-gases'));
+        $(document).click(function () {
+            // close menu on document click
+            $('.wrap-drop').removeClass('active');
+        });
+    });
+
+            
+            
+
+           var checkboxx = document.getElementById('reoundedOne')
+            checkbox.onclick = function(){
+                if(this.checked) {
+                        console.log('tak')   
+                    }
+                    else {
+                        console.log('nie')
+                    }
+                }
+            
+        </script>
+        <h1>Hello</h1>
     
 </body>
 </html>
