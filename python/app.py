@@ -9,6 +9,8 @@ from flask import Flask
 from contextlib import closing
 import sys
 from sys import exit
+import time
+import requests
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -49,6 +51,11 @@ def create_link(server_ip, stream_name, password):
     print(full_link)
     return full_link
 
+def connected_info(server_ip, stream_name):
+    full_address = "http://" + server_ip + ":8080/connected"
+    camera_ip = get_local_ip()
+    requests.post(full_address, json={stream_name: {"ip": camera_ip}})
+
 
 def default_stream():
     global ffmpeg_process
@@ -70,7 +77,6 @@ def default_stream():
 
 
 
-
 @app.route('/<fps><res>', methods=['POST'])
 def index(fps,res):
     global ffmpeg_process
@@ -79,30 +85,47 @@ def index(fps,res):
     global password
     global connection_link
 
+
     print(" ---- CLIICKED ---- ")
     data = request.get_json("data")
     fps =str(data['fps'])
     res =str(data['res'])
 
-    if ffmpeg_process is not None:
-        print("SENDING_SIGNAL")
-        ffmpeg_process.send_signal( signal.CTRL_C_EVENT )
-        print("SENT.. WAITING TO KILL FFMPEG")
-        ffmpeg_process.wait()
+    if fps == '69':
+        subprocess.call("taskkill.exe /t /f /im ffmpeg.exe")
+    elif fps == '99':
+        # subprocess.call("taskkill.exe /t /f /im ffmpeg.exe")
+        ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
+                                          '-re -f lavfi -i testsrc ' +  # Get camera input: -f vfwcap -i 0    OR    test video: lavfi -i testsrc
+                                          '-c:v libx264 ' +  # Codec - H.264
+                                          '-b:v 1600k -preset ultrafast -c:a libfdk_aac -b:a 128k -g 25 ' +
+                                          # '-vf scale=' + res +    # Resolution
+                                          # ' -r ' + fps +            # FPS
+                                          ' -pix_fmt yuv420p ' +  #
+                                          '-f flv "' + connection_link + ' live=true"'
+                                          )
+    else:
+
+        '''if ffmpeg_process is not None:
+            print("SENDING_SIGNAL")
+            ffmpeg_process.send_signal( signal.CTRL_C_EVENT )
+            print("SENT.. WAITING TO KILL FFMPEG")
+            ffmpeg_process.wait()'''
+
+        subprocess.call("taskkill.exe /t /f /im ffmpeg.exe")
+        time.sleep(2)
+        ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
+                            '-re -f lavfi -i testsrc '+                 #Get camera input: -f vfwcap -i 0    OR test video: -f lavfi -i testsrc
+                            '-c:v libx264 '+                            #Codec - H.264
+                            '-b:v 1600k -preset ultrafast -b 900k -c:a libfdk_aac -b:a 128k -g 25 '+ #stream stats
+                            '-vf scale=' + res +                        #Resolution
+                            ' -r ' + fps +                              #FPS
+                            ' -pix_fmt yuv420p ' +                   #
+                            '-f flv "' + connection_link + ' live=true"'
+                            )
 
 
-    ffmpeg_process = subprocess.Popen('C:/inz/ffmpeg/bin/ffmpeg.exe ' +
-                        '-re -f lavfi -i testsrc '+                 #Get camera input: -f vfwcap -i 0    OR test video: lavfi -i testsrc
-                        '-c:v libx264 '+                            #Codec - H.264
-                        '-b:v 1600k -preset ultrafast -b 900k -c:a libfdk_aac -b:a 128k -g 25 '+ #stream stats
-                        '-vf scale=' + res +                        #Resolution
-                        ' -r ' + fps +                              #FPS
-                        ' -pix_fmt yuv420p ' +                   #
-                        '-f flv "' + connection_link + ' live=true"'
-                        )
-
-
-    return 'Nothing to see here'
+        return 'Nothing to see here'
 
 
 def handler(signal_received, frame):
@@ -135,12 +158,16 @@ for i in range(len(sys.argv)):
     print(sys.argv[i])
     if '--do-not-start-stream' == sys.argv[i]:
         start_stream = False
+        print(start_stream)
     elif '--ip' == sys.argv[i]:
         server_ip = sys.argv[i + 1]
     elif '--pass' == sys.argv[i]:
         password = sys.argv[i + 1]
     elif '--name' == sys.argv[i]:
         name = sys.argv[i + 1]
+
+if start_stream == False:
+    connected_info(server_ip, name)
 
 signal.signal(signal.SIGINT, handler)
 
@@ -152,6 +179,10 @@ if name == "":
 if password == "":
     password = get_password()
 
-connection_link = create_link(server_ip,name,password)
+
+
+connection_link = create_link(server_ip, name, password)
 local_ip = get_local_ip()
 launch()
+print(start_stream)
+

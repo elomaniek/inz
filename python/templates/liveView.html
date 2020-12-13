@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>liveView</title>
     <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
       
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
@@ -47,7 +47,7 @@
     <script>
         document.getElementById("archiwum").onclick = function () {
                 location.target = "_blank"
-                location.href = "vplayer.html";
+                location.href = "{{ url_for('archive') }}";
                 
         };
 
@@ -106,19 +106,6 @@
             var camera_url = 'http://' + change + ':5000/fps&res'
             return camera_url;
         }
-        function getDisconnectIP(stream_name){
-            var change;
-            stream_name['ip'].substring(0,7)
-            if ( stream_name['ip'].slice(0,7) == '::ffff:')
-                change = stream_name['ip'].substring(7);
-            else if (stream_name['ip'] == "::1")    
-                change = '127.0.0.1'
-            else
-                alert('WHATTS CAMERA IP ADDRESS?!')
-       
-            var camera_url = 'http://' + change + ':5000/fps&res'
-            return camera_url;
-        }
 
         function printStreamName(stream){
 
@@ -132,19 +119,6 @@
             checkbox.name = "check";
             checkbox.checked = "true";
 
-            const button = document.createElement("button");
-            button.innerHTML = "Disconnect " + stream
-            button.onclick = async function(){
-                const exam = await fetchInfo();
-                var stream_block = exam['live'][stream]['publisher']
-                const stream_address = getCameraURL(stream_block)
-                postData(stream_address, {fps:"69", res:'0'})  //69 will tell camera to stop streaming
-                console.log("Camera " + stream + " will stop streaming now")
-                const delay = ms => new Promise(res => setTimeout(res, ms));
-                await delay(5000)
-                window.location.reload()
-            }
-            
             /*
             const checkboxSection = document.createElement('section');
             checkboxSection.title = ".viewCheckbox"
@@ -169,12 +143,8 @@
             */
             nameDiv.appendChild(name);
             nameDiv.appendChild(checkbox);
-            nameDiv.appendChild(button)
             nameDiv.id = stream +"1";
-            
-
             streamList.appendChild(nameDiv);
-
 
             checkbox.onclick = function(){
  
@@ -359,7 +329,41 @@
             button.addEventListener ("click", postInfo);
         };
 
+        function createOpenButton(stream){ 
+            if (!content.contains(document.getElementById('stream')))
+            var button = document.createElement("button");
+            button.innerHTML = 'Open ' + stream;
+            
+            streamList.appendChild(button)
+            button.onclick = async function(){
+                const exam = await fetchInfo();
+                var stream_block = exam['live'][stream]['publisher']
+                const url = ('http://localhost:8000/live/' + stream_block['stream'] + '/index.m3u8')
+                playVideo(url, stream);
+                var camera_url = getCameraURL(stream_block);
+                console.log(camera_url)
+                streamList.removeChild(button)
+                createCloseButton(stream)  //DLACZEGO NIE DZIALA?
+            };
 
+        };
+        //Close stream view - 
+        function createCloseButton(stream){ 
+            if (content.contains(document.getElementById(stream))){
+                var button = document.createElement("button");
+                button.innerHTML = 'Close ' + stream;
+                button.id = "closeButton";
+                document.body.appendChild(button);
+                //const streamList = document.querySelector('#streamList')
+                
+                button.onclick = function(){
+                    var currentPlayer = document.getElementById(stream);
+                    videojs(currentPlayer).dispose();
+                    document.body.removeChild(button)
+                    createOpenButton(stream);
+                };
+            }
+        };
 
 
         async function postData(url = '', data = {}) {
@@ -438,11 +442,11 @@
         slideThree.onclick = function(){
             if(this.checked) {
                 console.log("on")
-                postDataToArchive('http://localhost:8080/connected', {archive:true});
+                postDataToArchive('http://localhost:8080/settings', {archive:true});
             }
             else {
                 console.log("off")
-                postDataToArchive('http://localhost:8080/connected', {archive:false});
+                postDataToArchive('http://localhost:8080/settings', {archive:false});
             }
         }
 
@@ -474,57 +478,6 @@
 
         renderArchive();
         renderInfo();
-
-        async function fetchNotConnected() {
-            try {
-                const response = await fetch(`http://localhost:8080/connected`, {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
-                const exam = await response.json();
-                return exam;
-                } catch (error) {
-                    console.error(error);
-                }
-            };
-
-
-        async function renderNotConnected() {
-            const connectText = document.createElement('p2')
-            connectText.innerHTML = "Cameras that are not streaming:"
-            streamList.appendChild(connectText)
-
-            const exam = await fetchNotConnected();
-            
-            const streams = Object.keys(exam)
-            streams.forEach(stream => {
-                const stream_block = exam[stream]['ip'];
-                
-                const stream_address = "http://" + stream_block + ":5000/fps&res"
-
-                const connectButton = document.createElement('button')
-                
-                
-                connectButton.textContent = "connect to " + stream
-                connectButton.onclick = function(){
-                    postData(stream_address, {fps:"99",res:"0"})  //when 99 is sent, camera will acknowledge it as massage to start streaming
-                    console.log("Camera " + stream + " will start streaming now")
-                    streamList.removeChild(connectButton)
-
-                }
-
-                
-                
-                streamList.appendChild(connectButton)
-                console.log(stream_block)
-            });
-
-            console.log(streams)
-            
-
-
-        }
-        renderNotConnected();
        
         function DropDown(el) {
             this.dd = el;

@@ -17,6 +17,10 @@ import psutil
 server = None
 import preview
 import os
+import requests
+import socket
+
+
 
 class IP4Validator(Qt.QValidator):
     def __init__(self, parent=None):
@@ -64,6 +68,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, a0: QtGui.QCloseEvent):
         kill()
         a0.accept()
+        hostname = socket.gethostname()
+        camera_ip = socket.gethostbyname(hostname)
+        full_address = full_address = "http://" + self.lineServerIP.text() + ":8080/connected_del"
+        requests.post(full_address, json={self.lineName.text(): {"ip": camera_ip}})
+
         return
 
     #Launch Button is used to start flask server and if checkbox - startStreamImmediately is marked, it will start deafult stream
@@ -71,23 +80,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def launch_button(self):
 
         global server
-        print( self.lineServerIP.text())
+        print(self.lineServerIP.text())
 
         if os.path.exists('testlog.txt'):
             os.remove('testlog.txt')
 
         if self.startStreamImmediately.isChecked():
-            server = subprocess.Popen('python app.py --ip ' +
-                                      self.lineServerIP.text() +
+            server = subprocess.Popen('python app.py --ip ' +self.lineServerIP.text() +
                                       ' --name ' + self.lineName.text() +
-                                      ' --pass ' + self.linePassword.text() , stderr= open('testlog.txt', 'a'))
+                                      ' --pass ' + self.linePassword.text(), stderr=open('testlog.txt', 'a'))
         else:
-            server = subprocess.Popen('python app.py --do-not-start-stream')
+            server = subprocess.Popen('python app.py --do-not-start-stream ' +
+                                        '--ip ' +   self.lineServerIP.text() +
+                                        ' --name ' + self.lineName.text() +
+                                        ' --pass ' + self.linePassword.text(), stderr=open('testlog.txt', 'a'))
+
 
         return
     @pyqtSlot()
     def launch_preview(self):
-        preview.open_ffplay(self.lineServerIP.text(),self.lineName.text(), self.linePassword.text())
+        preview.open_ffplay(self.lineServerIP.text(), self.lineName.text(), self.linePassword.text())
 
     @pyqtSlot()
     def get_logs(self):
