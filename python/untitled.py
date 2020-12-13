@@ -66,13 +66,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     #Add funciolanity to close button
     def closeEvent(self, a0: QtGui.QCloseEvent):
-        kill()
-        a0.accept()
         hostname = socket.gethostname()
         camera_ip = socket.gethostbyname(hostname)
-        full_address = full_address = "http://" + self.lineServerIP.text() + ":8080/connected_del"
+        full_address = "http://" + self.lineServerIP.text() + ":8080/connected_del"
         requests.post(full_address, json={self.lineName.text(): {"ip": camera_ip}})
-
+        print('request to remove camera from json sent to: ' + full_address)
+        kill()
+        a0.accept()
         return
 
     #Launch Button is used to start flask server and if checkbox - startStreamImmediately is marked, it will start deafult stream
