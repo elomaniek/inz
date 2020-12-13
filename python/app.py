@@ -166,8 +166,8 @@ for i in range(len(sys.argv)):
     elif '--name' == sys.argv[i]:
         name = sys.argv[i + 1]
 
-if start_stream == False:
-    connected_info(server_ip, name)
+
+connected_info(server_ip, name)
 
 signal.signal(signal.SIGINT, handler)
 

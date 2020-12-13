@@ -423,7 +423,8 @@
                     var camera_url = getCameraURL(stream_block)
                     console.log(camera_url)
                     createChangeParameterButton(camera_url,stream);
-                    printStreamName(stream);      
+                    printStreamName(stream);
+                          
                     console.log(camera_url);                  
         
             });
@@ -489,34 +490,65 @@
             };
 
 
-        async function renderNotConnected() {
+        async function renderNotConnected(available_streams) {
             const connectText = document.createElement('p2')
             connectText.innerHTML = "Cameras that are not streaming:"
             streamList.appendChild(connectText)
-
-            const exam = await fetchNotConnected();
             
-            const streams = Object.keys(exam)
+            
+            const exam = await fetchNotConnected();
+            const streams = Object.keys(exam);
+            const conn = await fetchInfo();
+            const streams_connected = conn['live']
+            console.log(streams_connected)
             streams.forEach(stream => {
-                const stream_block = exam[stream]['ip'];
-                
-                const stream_address = "http://" + stream_block + ":5000/fps&res"
+                if(exam['live'] != undefined){
+                    if (streams_connected.includes(stream)==false){
+                        console.log('dziala')
+                        const stream_block = exam[stream]['ip'];
+                    
+                        const stream_address = "http://" + stream_block + ":5000/fps&res"
 
-                const connectButton = document.createElement('button')
-                
-                
-                connectButton.textContent = "connect to " + stream
-                connectButton.onclick = function(){
-                    postData(stream_address, {fps:"99",res:"0"})  //when 99 is sent, camera will acknowledge it as massage to start streaming
-                    console.log("Camera " + stream + " will start streaming now")
-                    streamList.removeChild(connectButton)
+                    const connectButton = document.createElement('button')
+                    
+                    
+                    connectButton.textContent = "connect to " + stream
+                    connectButton.onclick = async function(){
+                        postData(stream_address, {fps:"99",res:"0"})  //when 99 is sent, camera will acknowledge it as massage to start streaming
+                        console.log("Camera " + stream + " will start streaming now")
+                        streamList.removeChild(connectButton)
+                        const delay = ms => new Promise(res => setTimeout(res, ms));
+                        await delay(5000)
+                        window.location.reload()
+                    }
+                    streamList.appendChild(connectButton)
+                    }
+                }
+                else if (streams_connected.includes(stream)==false){
+                    console.log('dziala')
+                        const stream_block = exam[stream]['ip'];
+                    
+                        const stream_address = "http://" + stream_block + ":5000/fps&res"
 
+                    const connectButton = document.createElement('button')
+                    
+                    
+                    connectButton.textContent = "Connect to " + stream
+                    connectButton.onclick = async function(){
+                        postData(stream_address, {fps:"99",res:"0"})  //when 99 is sent, camera will acknowledge it as massage to start streaming
+                        console.log("Camera " + stream + " will start streaming now")
+                        streamList.removeChild(connectButton)
+                        const delay = ms => new Promise(res => setTimeout(res, ms));
+                        await delay(5000)
+                        window.location.reload()
+                    }
+                    streamList.appendChild(connectButton)
+                }
+                else {
+                    console.log("FAILED TO LOAD STREAM LISTS")
                 }
 
                 
-                
-                streamList.appendChild(connectButton)
-                console.log(stream_block)
             });
 
             console.log(streams)
