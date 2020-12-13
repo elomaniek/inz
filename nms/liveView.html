@@ -335,7 +335,7 @@
 
 
             //Create function to post data to flask server (camera)
-            function postInfo(){
+            async function postInfo(){
                 const resolution = document.querySelector('#mySelect'+stream)
                 const fps = document.querySelector("#myInput"+stream)
                 
@@ -350,6 +350,9 @@
                     console.log(res)
                     postData(camera_url, {fps:streamfps, res:res})
                     alert("Request SENT\nCamera: " + stream + "\nResolution: " + res + "\nFPS: " + streamfps)
+                    const delay = ms => new Promise(res => setTimeout(res, ms));
+                    await delay(10000)
+                    window.location.reload()
                 }
                 else {
                     alert ("FPS box will only accept values between 1 and 30\nInserted value: " + streamfps)
@@ -432,6 +435,7 @@
             else{
                 const h1 = document.createElement('h1')
                 h1.textContent = "NO CAMERAS AVAILABLE";
+                
                 content.appendChild(h1)
             }
         };
@@ -439,7 +443,7 @@
         slideThree.onclick = function(){
             if(this.checked) {
                 console.log("on")
-                postDataToArchive('http://localhost:8080/connected', {archive:true});
+                postDataToArchive('http://localhost:8080/settings', {archive:true});
             }
             else {
                 console.log("off")
@@ -489,6 +493,16 @@
                 }
             };
 
+        function containsObject(obj, list) {
+            var i;
+            for (i = 0; i < list.length; i++) {
+                if (list[i] === obj) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         async function renderNotConnected(available_streams) {
             const connectText = document.createElement('p2')
@@ -499,11 +513,11 @@
             const exam = await fetchNotConnected();
             const streams = Object.keys(exam);
             const conn = await fetchInfo();
-            const streams_connected = conn['live']
+            const streams_connected = Object.keys(conn.live)
             console.log(streams_connected)
             streams.forEach(stream => {
-                if(exam['live'] != undefined){
-                    if (streams_connected.includes(stream)==false){
+                if(streams_connected == undefined){
+                    
                         console.log('dziala')
                         const stream_block = exam[stream]['ip'];
                     
@@ -518,14 +532,17 @@
                         console.log("Camera " + stream + " will start streaming now")
                         streamList.removeChild(connectButton)
                         const delay = ms => new Promise(res => setTimeout(res, ms));
-                        await delay(5000)
+                        await delay(10000)
                         window.location.reload()
                     }
                     streamList.appendChild(connectButton)
-                    }
+                    
                 }
-                else if (streams_connected.includes(stream)==false){
-                    console.log('dziala')
+                else if (streams_connected!=undefined){
+                    if (streams_connected.includes(stream)==false){
+                        
+                    console.log(streams_connected)
+                    console.log("includes: " + streams_connected.includes(stream) + stream)
                         const stream_block = exam[stream]['ip'];
                     
                         const stream_address = "http://" + stream_block + ":5000/fps&res"
@@ -539,11 +556,12 @@
                         console.log("Camera " + stream + " will start streaming now")
                         streamList.removeChild(connectButton)
                         const delay = ms => new Promise(res => setTimeout(res, ms));
-                        await delay(5000)
+                        await delay(10000)
                         window.location.reload()
                     }
                     streamList.appendChild(connectButton)
                 }
+            }
                 else {
                     console.log("FAILED TO LOAD STREAM LISTS")
                 }
